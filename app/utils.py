@@ -25,4 +25,3 @@ def signJWT(user_id: str, type_jwt: str) -> Dict[str, str]:
 
 
 
-print(datetime.today().date())

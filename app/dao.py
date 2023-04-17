@@ -53,7 +53,6 @@ def verify_user_exist(email: str):
     connection.close()
 
     if result:
-        print(result)
         return result
     else:
         return None
@@ -74,7 +73,7 @@ def verify_token_exist(id_user: int):
         database=DATABASE
     )
 
-    query = f"""select id_token, date_experience from two_auth where id_user = '{id_user}';"""
+    query = f"""select id_token, date_experience, id_user from two_auth where id_user = '{id_user}';"""
 
     cursor.execute(query)
 
@@ -85,6 +84,7 @@ def verify_token_exist(id_user: int):
         return result
     else:
         return None
+
 
 
 
@@ -106,7 +106,7 @@ def verify_token_is_revoked(id_token: int):
     result = cursor.fetchone()
     connection.close()
 
-    return not bool(result)
+    return bool(result)
 
 
 
@@ -127,7 +127,7 @@ def insert_revoked_token(id_token: int, id_user: int):
 
 
 
-def insert_new_token_and_code(id_user: int, user_token: str):
+def insert_new_token_and_code(id_user: int,):
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -135,8 +135,8 @@ def insert_new_token_and_code(id_user: int, user_token: str):
         database=DATABASE
     )
 
-    query = f"""insert into two_auth (id_user, user_token, create_date)
-     values ({id_user}, {user_token}, {datetime.today().date()});"""
+    query = f"""insert into two_auth (id_user, date_experience)
+     values ({id_user}, {datetime.today().date()});"""
 
     cursor.execute(query)
     connection.commit()
