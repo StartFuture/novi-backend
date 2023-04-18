@@ -11,7 +11,6 @@ create table users (
     news boolean,
     info_conditions boolean,
     PRIMARY KEY (id_user)
-    
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 create table address (
@@ -23,5 +22,4 @@ create table address (
     address_number varchar(255),
     complements varchar(255),
     PRIMARY KEY (id_address)
-    ENGINE = innodb
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
