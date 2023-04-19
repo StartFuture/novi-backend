@@ -30,20 +30,25 @@ def auth(user: UserModel) -> dict:
                 if not is_revoked:#Se token não esta revogado:
                     date_now = datetime.now().date()# Data do dia atual.
 
-                    if(date_now.day - token_result['date_experience']).days <= 3:#Se data de expiração# e menor ou igual a 3 então token valido:
-                        raise HTTPException(status_code=status.HTTP_200_OK, detail="Token is valid")
+                    if(date_now.day - token_result['date_experience'].day) <= 3:#Se data de expiração# e menor ou igual a 3 então token valido:
+                        return {'message': 'Token is valid'}
 
                     else:#Se data de expiração é maior que 3 entao token e invalido:
                         dao.insert_revoked_token(id_token=token_result['id_token'], id_user=token_result['id_user'])
-                        dao.insert_new_token_and_code(token_result['id_user'])
-                        raise HTTPException(status_code=status.HTTP_200_OK, detail="Token is valid")
+                        token = utils.signJWT(user_id=query_result['id_user'], type_jwt='JWT')
+                        dao.update_token(token_result['id_user'])
+                        return token
 
                 else:#se token esta revogado:
-                    dao.insert_new_token_and_code(token_result['id_user'])
-                    raise HTTPException(status_code=status.HTTP_200_OK, detail="Token is valid")
+                    token = utils.signJWT(query_result['id_user'], type_jwt='JWT')
+                    dao.update_token(token_result['id_user'])
+                    raise token
+
             else:#Se token não existe:
+                token = utils.signJWT(query_result['id_user'], type_jwt='JWT')
                 dao.insert_new_token_and_code(query_result['id_user'])
-                raise HTTPException(status_code=status.HTTP_200_OK, detail="Token is valid")
+                return token
+
         else:#Se senha esta incorreta:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Wrong input")#Mensagem informando input incorreto
     else:#se usuario não existe:
@@ -51,6 +56,13 @@ def auth(user: UserModel) -> dict:
 
 
 
+@app.post("/delete_user/{id_user}", status_code=status.HTTP_200_OK)
+def delete(id_user: int):
+    query_result = dao.delete_user_by_id(id_user=id_user)
+    if query_result:
+        return {'message': 'user delete.'}
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="wrong input")
 
 
 
