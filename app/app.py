@@ -65,6 +65,16 @@ def delete(id_user: int):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="wrong input")
 
 
+# Get all comments to landing page
+@app.get("/get_comment", status_code=status.HTTP_200_OK)
+def get_all_comments():
+    comments = [
+        {'img': 'img', 'name': 'Paula Lima Santos', 'perfil': 'Viajante', 'stars': '5', 'comment': 'Lorem ipsum dolor sit amet consectetur. Turpis dignissim sed et et interdum non dolor. Aliquam amet eleifend sit sagittis egestas etiam sed morbi. Suspendisse suscipit mauris at aliquam tristique risus nunc netus nullam. Ac sociis lorem a in sed mauris.'},
+        {'img': 'img', 'name': 'Paula Lima Santos', 'perfil': 'Viajante', 'stars': '5', 'comment': 'Lorem ipsum dolor sit amet consectetur. Turpis dignissim sed et et interdum non dolor. Aliquam amet eleifend sit sagittis egestas etiam sed morbi. Suspendisse suscipit mauris at aliquam tristique risus nunc netus nullam. Ac sociis lorem a in sed mauris.'},
+        {'img': 'img', 'name': 'Paula Lima Santos', 'perfil': 'Viajante', 'stars': '5', 'comment': 'Lorem ipsum dolor sit amet consectetur. Turpis dignissim sed et et interdum non dolor. Aliquam amet eleifend sit sagittis egestas etiam sed morbi. Suspendisse suscipit mauris at aliquam tristique risus nunc netus nullam. Ac sociis lorem a in sed mauris.'},
+        {'img': 'img', 'name': 'Paula Lima Santos', 'perfil': 'Viajante', 'stars': '5', 'comment': 'Lorem ipsum dolor sit amet consectetur. Turpis dignissim sed et et interdum non dolor. Aliquam amet eleifend sit sagittis egestas etiam sed morbi. Suspendisse suscipit mauris at aliquam tristique risus nunc netus nullam. Ac sociis lorem a in sed mauris.'}   
+    ]
+    return comments
 
 
 
