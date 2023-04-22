@@ -1,4 +1,4 @@
-create table users (
+create table table_users (
     id_user int(11) not null AUTO_INCREMENT,
     name_user varchar(255),
     last_name varchar(255),
@@ -13,13 +13,14 @@ create table users (
     PRIMARY KEY (id_user)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create table address (
+create table table_address (
     id_address int(11) not null AUTO_INCREMENT,
-    cep varchar(255),
-    state_user varchar(255),
-    city varchar(255),
+    cep varchar(8),
+    state_user varchar(2),
+    city varchar(30),
     address_user varchar(255),
-    address_number varchar(255),
+    address_number varchar(5),
     complements varchar(255),
-    PRIMARY KEY (id_address)
+    PRIMARY KEY (id_address),
+    FOREIGN KEY (id_user) REFERENCES table_users(id_users)    
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
