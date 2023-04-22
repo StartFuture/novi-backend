@@ -1,3 +1,7 @@
+create database novi;
+
+use novi;
+
 create table table_users (
     id_user int(11) not null AUTO_INCREMENT,
     name_user varchar(255),
@@ -12,6 +16,8 @@ create table table_users (
     info_conditions boolean,
     PRIMARY KEY (id_user)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+use novi;
 
 create table table_address (
     id_address int(11) not null AUTO_INCREMENT,
