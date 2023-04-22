@@ -26,6 +26,7 @@ def select_all():
     cursor.execute(query)
     user_list = cursor.fetchall()
     connection.close()
+
     return user_list
 
 
@@ -40,10 +41,12 @@ async def insert_new_line_user(name_user: str, last_name: str, date_birth: str, 
 
     connection.commit()
     connection.close()
+
     return {'message': 'User created successfully'}
 
 async def insert_new_line_address(cep: str, state_user: str, city: str, address_user: str, address_number: str, complements: str):
     connection,cursor = conect_database(host=HOST, user=USER, password=PASSWORD, database=DATABASE)
+    
     if cep is None:
         cep = ''
     if state_user is None:
@@ -56,6 +59,7 @@ async def insert_new_line_address(cep: str, state_user: str, city: str, address_
         address_number = ''
     if complements is None:
         complements = ''
+
     create_address = f"""
     INSERT INTO address
     (id_address, cep, state_user, city, address_user, address_number, complements)
@@ -68,7 +72,7 @@ async def insert_new_line_address(cep: str, state_user: str, city: str, address_
     result = cursor.fetchone()
     connection.close()
 
-    return result
+    return result, {'message': 'Address created successfully'}
 
 async def verify_cpf(cpf: str):
     connection,cursor = conect_database(host=HOST, user=USER, password=PASSWORD, database=DATABASE)
@@ -76,6 +80,7 @@ async def verify_cpf(cpf: str):
     cursor.execute(query)
     result = cursor.fetchone()
     connection.close()
+
     return result is not None
 
 async def verify_email(email: str):
@@ -84,4 +89,93 @@ async def verify_email(email: str):
     cursor.execute(query)
     result = cursor.fetchone()
     connection.close()
+
     return result is not None
+
+# Atualizaçãp de dados do usuário
+async def update_line_users(id_user: int,name_user: str, last_name: str, email: str, cpf: str, cellphone: str, id_address: int, password_user: str, news: bool):
+    connection,cursor = conect_database(host=HOST, user=USER, password=PASSWORD, database=DATABASE)
+    
+    if name_user is None:
+        name_user = ''
+    if name_user is None:
+        name_user = ''
+    if name_user is None:
+        name_user = ''
+    if name_user is None:
+        name_user = ''
+    if name_user is None:
+        name_user = ''
+    
+    update_user = f"""
+    UPDATE users 
+    SET 
+    name_user='{name_user}',
+    last_user='{last_name}',
+    email='{email}', 
+    cpf='{cpf}', 
+    cellphone='{cellphone}', 
+    password_user='{password_user}', 
+    news={news}
+    WHERE id_user = {id_user}"""
+    cursor.execute(update_user)
+    connection.commit()
+    query = f"""SELECT id_address FROM users WHERE id_user = {id_user}"""
+    cursor.execute(query)
+    result = cursor.fetchone()
+    connection.close()
+
+    return result, {'message': 'User updated successfully'}
+
+# Atualizaçãp de dados de address
+async def update_line_address(id_address: int, cep: str, state_user: str, city: str, address_user: str, address_number: str, complements: str):
+    connection,cursor = conect_database(host=HOST, user=USER, password=PASSWORD, database=DATABASE)
+    
+    if cep is None:
+        query = f"""SELECT cep FROM address WHERE id_address = {id_address}"""
+        cursor.execute(query)
+        result = cursor.fetchone()
+        print(result)
+        cep = result['cep']
+    if state_user is None:
+        query = f"""SELECT state_user FROM address WHERE id_address = {id_address}"""
+        cursor.execute(query)
+        result = cursor.fetchone()
+        print(result)
+        state_user = result['state_user']
+    if city is None:
+        query = f"""SELECT city FROM address WHERE id_address = {id_address}"""
+        cursor.execute(query)
+        result = cursor.fetchone()
+        print(result)
+        city = result['city']
+    if address_user is None:
+        query = f"""SELECT address_user FROM address WHERE id_address = {id_address}"""
+        cursor.execute(query)
+        result = cursor.fetchone()
+        print(result)
+        address_user = result['address_user']
+    if address_number is None:
+        query = f"""SELECT cep FROM address WHERE id_address = {id_address}"""
+        cursor.execute(query)
+        result = cursor.fetchone()
+        print(result)
+        address_number = result['address_number']
+    if complements is None:
+        query = f"""SELECT cep FROM address WHERE id_address = {id_address}"""
+        cursor.execute(query)
+        result = cursor.fetchone()
+        print(result)
+        complements = result['complements']
+
+    update_address = f"""
+    UPDATE address
+    SET
+    cep='{cep}',
+    state_user='{state_user}',
+    city='{city}',
+    address_user='{address_user}',
+    address_number='{address_number}',
+    complements='{complements}'
+    WHERE id_addres = {id_address}"""
+    return {'message': 'Address updated successfully'}

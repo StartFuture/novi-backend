@@ -35,7 +35,7 @@ class User(BaseModel):
 class UserUpdate(BaseModel):
     name_user: Optional[str] = Field(None, min_length=3, max_length=25, regex=pattern)
     email: Optional[str] = Field(None, min_length=3, max_length=80, regex=email_pattern)
-    cpf: Optional[str] = Field(None, min_length=11, max_length=14, regex=r'^[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\.?\-?[0-9]{2}$')
+    cpf: Optional[str] = Field(None, regex=r'^[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\.?\-?[0-9]{2}$')
     cellphone: Optional[str] = Field(None, min_length=11, max_length=15, regex=r'^\(?[0-9]{2}\)?\s?9[0-9]{4}\-?[0-9]{4}$')
     password_user: Optional[str] = Field(None, min_length=8)
     news: bool

@@ -7,7 +7,7 @@ def user_data_processing(cpf: str, cellphone: str):
 
 def username_processing(name_user: str):
     if name_user is not None:
-        if len(name_user.split(' ', 1)) > 1:
+        if len(name_user.strip().split(' ', 1)) > 1:
             name = name_user.strip().split(' ', 1)
             name_user = str(name[0]).lower().strip()
             last_name = str(name[1]).lower().strip()
