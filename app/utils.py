@@ -1,3 +1,22 @@
+from datetime import timedelta, datetime
+from typing import Dict
+
+from jose import jwt
+
+JWT_SECRET = '--very secret key--'
+JWT_ALGORITHM = 'HS256'
+
+def signJWT(user_id: str, type_jwt: str) -> Dict[str, str]:
+    payload = {
+        "user_id": user_id,
+        "exp": 3,
+        "type": type_jwt
+    }
+    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+    return {'access_token': token}
+
+
 # Processar dados de usuário
 def user_data_processing(cpf: str, cellphone: str):
     if cpf is not None:
@@ -5,6 +24,7 @@ def user_data_processing(cpf: str, cellphone: str):
     if cellphone is not None:
         cellphone = cellphone.replace('-', '').replace('(', '').replace(')', '').replace(' ', '')
     return cpf, cellphone
+
 
 # Processar username
 def username_processing(name_user: str):
@@ -23,6 +43,7 @@ def username_processing(name_user: str):
         last_name = None
         return name_user, last_name
 
+
 # Colocar date para formato inglês
 def date_english_mode(date_birth: str):
     date = date_birth.strip().replace('/', '')
@@ -31,6 +52,7 @@ def date_english_mode(date_birth: str):
     date_day = date[:2]
     date_birth = str(date_year + date_month + date_day)
     return date_birth
+
 
 # Processar dado da tabela Address
 def address_data_processing(cep: str, city:str, address_user:str):

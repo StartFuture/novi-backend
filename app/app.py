@@ -1,7 +1,31 @@
 from fastapi import FastAPI
-
-from routes.user_route import user
+from routes import autentication, users
 
 app = FastAPI()
 
-app.include_router(user, prefix='/usuarios', tags=['User'])
+app.include_router(autentication.router, prefix="/auth", tags=['autenticaçao'])
+app.include_router(users.router, prefix="/user", tags=['usuarios'])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

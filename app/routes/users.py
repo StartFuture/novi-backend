@@ -1,20 +1,28 @@
-from fastapi import APIRouter, status, HTTPException
-
-import dao.db #import select_all, insert_new_line_user, insert_new_line_address, verify_cpf, verify_email, update_line_users, verify_user_exist
+from fastapi import APIRouter, HTTPException, status
+from dao import dao
 from models.user_model import  Address, User, UserUpdate, AddressUpdate, NewsUpdate
 import utils #import user_data_processing, username_processing, date_english_mode, address_data_processing
 
-user = APIRouter()
+router = APIRouter()
+
+@router.delete("/delete_user/{id_user}", status_code=status.HTTP_200_OK)
+def delete(id_user: int):
+    query_result = dao.delete_user_by_id(id_user=id_user)
+    if query_result:
+        return {'message': 'user delete.'}
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="wrong input")
+
 
 #Lista usuários
-@user.get('/')
+@router.get('/')
 async def read_data():
     querry = dao.select_all()
     return querry
 
 
 #Criação de Usuário
-@user.post('/user', status_code=status.HTTP_201_CREATED)
+@router.post('/user', status_code=status.HTTP_201_CREATED)
 async def write_data(address: Address, user: User):
    
     #Processando dados
@@ -22,8 +30,8 @@ async def write_data(address: Address, user: User):
     user.name_user, last_name = utils.username_processing(user.name_user)
     user.cpf, user.cellphone = utils.user_data_processing(user.cpf, user.cellphone)
     user.date_birth = utils.date_english_mode(user.date_birth)
-    cpf_verify = await dao.db.verify_cpf(user.cpf)
-    email_verify = await dao.db.verify_email(user.email)
+    cpf_verify = await dao.verify_cpf(user.cpf)
+    email_verify = await dao.verify_email(user.email)
 
     
     #Verificando Erros
@@ -39,7 +47,7 @@ async def write_data(address: Address, user: User):
 
 
     #Criando linha na tabela address e escapando id_address(result)
-    result, message = await dao.db.insert_new_line_address(
+    result, message = await dao.insert_new_line_address(
         cep= address.cep,
         state_user= address.state_user,
         city= address.city,
@@ -49,7 +57,7 @@ async def write_data(address: Address, user: User):
     )
 
     #Criando linha na tabela users
-    await dao.db.insert_new_line_user(
+    await dao.insert_new_line_user(
         name_user= user.name_user,
         last_name= last_name,
         date_birth= user.date_birth,
@@ -65,15 +73,15 @@ async def write_data(address: Address, user: User):
 
     return {'message': f'User {user.name_user}, created successfully'}
 
-@user.patch('/user/{id_user}', status_code=status.HTTP_200_OK)
+@router.patch('/user/{id_user}', status_code=status.HTTP_200_OK)
 async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, news_update: NewsUpdate):
 
     #Processando dados
     address.cep, address.city, address.address_user = utils.address_data_processing(address.cep, address.city, address.address_user)
     user.name_user, last_name = utils.username_processing(user.name_user)
     user.cpf, user.cellphone = utils.user_data_processing(user.cpf, user.cellphone)
-    verify_user = await dao.db.verify_user_exist(id_user)
-    verify_cpf, verify_email = await dao.db.verify_data_users(id_user, user.cpf, user.email)
+    verify_user = await dao.verify_user_exist(id_user)
+    verify_cpf, verify_email = await dao.verify_data_users(id_user, user.cpf, user.email)
 
     #Verificando Erros
     if verify_user is False:
@@ -87,7 +95,7 @@ async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, ne
                             detail=f'Cannot create user. Email {user.email} alredy exist')
     
     #atualizando usuário
-    result, message = await dao.db.update_line_users(
+    result, message = await dao.update_line_users(
         id_user = id_user,
         name_user= user.name_user,
         last_name= last_name,
@@ -98,13 +106,13 @@ async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, ne
         user = user
     )
 
-    await dao.db.update_line_users_news(
+    await dao.update_line_users_news(
         id_user = id_user,
         news= news_update.news
     )
 
     #atualizando address
-    await dao.db.update_line_address(
+    await dao.update_line_address(
         cep= address.cep,
         state_user= address.state_user,
         city= address.city,
