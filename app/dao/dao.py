@@ -199,6 +199,32 @@ def delete_user_by_id(id_user: int):
 
 
 
+def insert_new_user_comment(user_name: str, perfil: str, stars: int, user_comment: str):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""insert into ratings_comments (name_user, perfil, stars, user_comment, id_user)
+                values ("{user_name}", "{perfil}", "{stars}", "{user_comment}");"""
+
+    cursor.execute(action)
+    connection.commit()
+
+    query = f"""select name_user from ratings_comments where user_comment = "{user_comment}";"""
+
+    cursor.execute(query)
+    result = cursor.fetchone()
+
+    connection.commit()
+    connection.close()
+
+    return bool(result)
+
+
+
 
 
 
