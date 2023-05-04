@@ -1,7 +1,10 @@
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import JSONResponse
+import requests
+
 from dao import dao
 from models.user_model import  Address, User, UserUpdate, AddressUpdate, NewsUpdate
-import utils #import user_data_processing, username_processing, date_english_mode, address_data_processing
+import utils
 
 router = APIRouter()
 
@@ -25,29 +28,42 @@ async def read_data():
 @router.post('/user', status_code=status.HTTP_201_CREATED)
 async def write_data(address: Address, user: User):
    
-    #Processando dados
-    address.cep, address.city, address.address_user = utils.address_data_processing(address.cep, address.city, address.address_user)
+   #Verificação de CEP
+    address.cep = utils.cep_data_processing(address.cep)
+    request = await requests.get('https://viacep.com.br/ws/{}/json/'.format(address.cep))
+    address_data = request.json()
+    print(request.status_code)
+    if 'erro' not in address_data:
+        address.state_user = address_data['uf']
+        address.city = address_data['localidade']
+        address.address_user = address_data['logradouro']
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f'. CEP {address.cep} not exist')
+
+    #Processando dados    
+    address.city, address.address_user = utils.address_data_processing(address.city, address.address_user)
     user.name_user, last_name = utils.username_processing(user.name_user)
-    user.cpf, user.cellphone = utils.user_data_processing(user.cpf, user.cellphone)
+    user.cpf, user.cellphone, user.email = utils.user_data_processing(user.cpf, user.cellphone, user.email)
     user.date_birth = utils.date_english_mode(user.date_birth)
-    cpf_verify = await dao.verify_cpf(user.cpf)
-    email_verify = await dao.verify_email(user.email)
+    cpf_verify = await dao.db.verify_cpf(user.cpf)
+    email_verify = await dao.db.verify_email(user.email)
 
     
     #Verificando Erros
-    if cpf_verify is not False:
+    if cpf_verify:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail=f'Cannot create user. CPF {user.cpf} alredy exist')
-    if email_verify is not False:
+    if email_verify:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail=f'Cannot create user. email: {user.email} alredy exist')
-    if user.info_conditions is False:
+    if not user.info_conditions:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail=f'Cannot create user due to authorization of the terms')
 
 
     #Criando linha na tabela address e escapando id_address(result)
-    result, message = await dao.insert_new_line_address(
+    result, message = await dao.db.insert_new_line_address(
         cep= address.cep,
         state_user= address.state_user,
         city= address.city,
@@ -57,7 +73,7 @@ async def write_data(address: Address, user: User):
     )
 
     #Criando linha na tabela users
-    await dao.insert_new_line_user(
+    await dao.db.insert_new_line_user(
         name_user= user.name_user,
         last_name= last_name,
         date_birth= user.date_birth,
@@ -71,7 +87,7 @@ async def write_data(address: Address, user: User):
     )
 
 
-    return {'message': f'User {user.name_user}, created successfully'}
+    return JSONResponse(content={'message': f'User {user.name_user}, created successfully'})
 
 @router.patch('/user/{id_user}', status_code=status.HTTP_200_OK)
 async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, news_update: NewsUpdate):
@@ -87,10 +103,10 @@ async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, ne
     if verify_user is False:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'User not found')
-    if verify_cpf is True:
+    if verify_cpf:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail=f'Cannot create user. CPF {user.cpf} alredy exist')
-    if verify_email is True:
+    if verify_email:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail=f'Cannot create user. Email {user.email} alredy exist')
     
@@ -124,4 +140,4 @@ async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, ne
     )
 
 
-    return {'message': f'User {user.name_user}, updated successfully'}
+    return JSONResponse(content={'message': f'User {user.name_user}, updated successfully'})

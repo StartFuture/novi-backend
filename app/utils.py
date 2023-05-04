@@ -17,12 +17,14 @@ def signJWT(user_id: str, type_jwt: str) -> Dict[str, str]:
 
 
 # Processar dados de usuário
-def user_data_processing(cpf: str, cellphone: str):
+def user_data_processing(cpf: str, cellphone: str, email: str):
     if cpf is not None:
         cpf = cpf.replace('.', '').replace('-', '')
     if cellphone is not None:
         cellphone = cellphone.replace('-', '').replace('(', '').replace(')', '').replace(' ', '')
-    return cpf, cellphone
+    if email is not None:
+        email = email.strip().lower()
+    return cpf, cellphone, email
 
 
 # Processar username
@@ -54,11 +56,14 @@ def date_english_mode(date_birth: str):
 
 
 # Processar dado da tabela Address
-def address_data_processing(cep: str, city:str, address_user:str):
-    if cep is not None:
-        cep = cep.replace('-', '')
+def address_data_processing(city:str, address_user:str):
     if city is not None:
         city = city.strip().lower()
     if address_user is not None:
         address_user = address_user.strip().lower()
-    return cep, city, address_user
+    return city, address_user
+
+def cep_data_processing(cep:str):
+    if cep is not None:
+        cep = cep.replace('-', '')
+    return cep
