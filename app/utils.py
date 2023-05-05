@@ -17,13 +17,13 @@ def signJWT(user_id: str, type_jwt: str) -> Dict[str, str]:
 
 
 # Processar dados de usuário
-def user_data_processing(cpf: str, cellphone: str, email: str):
+async def user_data_processing(cpf: str, cellphone: str, email: str):
     if cpf is not None:
         cpf = cpf.replace('.', '').replace('-', '')
     if cellphone is not None:
         cellphone = cellphone.replace('-', '').replace('(', '').replace(')', '').replace(' ', '')
     if email is not None:
-        email = email.strip().lower()
+        email = email.lower().strip()
     return cpf, cellphone, email
 
 

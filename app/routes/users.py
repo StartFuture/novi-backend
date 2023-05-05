@@ -43,9 +43,8 @@ async def write_data(address: Address, user: User):
    
    #Verificação de CEP
     address.cep = utils.cep_data_processing(address.cep)
-    request = await requests.get('https://viacep.com.br/ws/{}/json/'.format(address.cep))
+    request =requests.get('https://viacep.com.br/ws/{}/json/'.format(address.cep))
     address_data = request.json()
-    print(request.status_code)
     if 'erro' not in address_data:
         address.state_user = address_data['uf']
         address.city = address_data['localidade']
@@ -57,11 +56,9 @@ async def write_data(address: Address, user: User):
     #Processando dados    
     address.city, address.address_user = utils.address_data_processing(address.city, address.address_user)
     user.name_user, last_name = utils.username_processing(user.name_user)
-    user.cpf, user.cellphone, user.email = utils.user_data_processing(user.cpf, user.cellphone, user.email)
+    user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
     user.date_birth = utils.date_english_mode(user.date_birth)
-    cpf_verify = await dao.db.verify_cpf(user.cpf)
-    email_verify = await dao.db.verify_email(user.email)
-
+    cpf_verify, email_verify = await dao.verify_data_overwrite(user.cpf, user.email)
     
     #Verificando Erros
     if cpf_verify:
@@ -76,7 +73,7 @@ async def write_data(address: Address, user: User):
 
 
     #Criando linha na tabela address e escapando id_address(result)
-    result, message = await dao.db.insert_new_line_address(
+    result, message = await dao.insert_new_line_address(
         cep= address.cep,
         state_user= address.state_user,
         city= address.city,
@@ -86,7 +83,7 @@ async def write_data(address: Address, user: User):
     )
 
     #Criando linha na tabela users
-    await dao.db.insert_new_line_user(
+    await dao.insert_new_line_user(
         name_user= user.name_user,
         last_name= last_name,
         date_birth= user.date_birth,
@@ -106,14 +103,15 @@ async def write_data(address: Address, user: User):
 async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, news_update: NewsUpdate):
 
     #Processando dados
-    address.cep, address.city, address.address_user = utils.address_data_processing(address.cep, address.city, address.address_user)
+    address.cep = utils.cep_data_processing(address.cep)
+    address.city, address.address_user = utils.address_data_processing(address.city, address.address_user)
     user.name_user, last_name = utils.username_processing(user.name_user)
-    user.cpf, user.cellphone = utils.user_data_processing(user.cpf, user.cellphone)
-    verify_user = await dao.verify_user_exist(id_user)
+    user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
     verify_cpf, verify_email = await dao.verify_data_users(id_user, user.cpf, user.email)
+    verify_user = await dao.verify_user_exist(id_user)
 
     #Verificando Erros
-    if verify_user is False:
+    if not verify_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'User not found')
     if verify_cpf:

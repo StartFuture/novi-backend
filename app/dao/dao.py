@@ -429,7 +429,7 @@ async def verify_user_exist(id_user: int):
     result = cursor.fetchone()
     connection.close()
 
-    return result is not None
+    return bool(result)
 
 
 async def verify_data_users(id_user: int, cpf: str, email: str):
