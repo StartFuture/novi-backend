@@ -19,9 +19,22 @@ def delete(id_user: int):
 
 #Lista usuários
 @router.get('/')
-async def read_data():
+def read_data():
     querry = dao.select_all()
     return querry
+
+
+#Lista usuário por id
+@router.get('/{id_user}')
+async def read_user_data(id_user: int):
+    query_user, id_address = await dao.select_user(id_user)
+
+    if query_user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f'User not exist')
+    
+    query_address = await dao.select_address(id_address)
+    return query_user, query_address
 
 
 #Criação de Usuário
@@ -39,7 +52,7 @@ async def write_data(address: Address, user: User):
         address.address_user = address_data['logradouro']
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f'. CEP {address.cep} not exist')
+                            detail=f'Cannot create user. CEP {address.cep} not exist')
 
     #Processando dados    
     address.city, address.address_user = utils.address_data_processing(address.city, address.address_user)

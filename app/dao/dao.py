@@ -225,6 +225,44 @@ def select_all():
     return user_list
 
 
+async def select_user(id_user: int):
+    connection,cursor = conect_database(
+        host=HOST, 
+        user=USER, 
+        password=PASSWORD, 
+        database=DATABASE
+    )
+
+    query_id = f"SELECT * FROM users WHERE id_user = {id_user}"
+
+    cursor.execute(query_id)
+    query_user = cursor.fetchone()
+
+    query_id_address = f"SELECT id_address FROM users WHERE id_user = {id_user}"
+    cursor.execute(query_id_address)
+    id_address = cursor.fetchone()
+    connection.close()
+
+    return query_user, id_address
+
+
+async def select_address(id_address: int):
+    connection,cursor = conect_database(
+        host=HOST, 
+        user=USER, 
+        password=PASSWORD, 
+        database=DATABASE
+    )
+
+    query = f"SELECT * FROM address WHERE id_address = {id_address['id_address']}"
+
+    cursor.execute(query)
+    query_address = cursor.fetchone()
+    connection.close()
+
+    return query_address
+    
+
 async def insert_new_line_address(cep: str, state_user: str, city: str, address_user: str, address_number: str, complements: str):
     connection,cursor = conect_database(
         host=HOST, 
@@ -292,7 +330,7 @@ async def verify_data_overwrite(cpf: str, email: str):
     result_email = cursor.fetchone()
     connection.close()
 
-    return bool(result_cpf), bool(query_email)
+    return bool(result_cpf), bool(result_email)
 
 
 async def verify_email(email: str):
@@ -339,6 +377,7 @@ async def update_line_users(id_user: int, name_user: str, last_name: str, email:
 
     return result, {'message': 'User updated successfully'}
 
+
 # Atualização do dado news
 async def update_line_users_news(id_user: int, news: bool):
     connection,cursor = conect_database(
@@ -355,6 +394,7 @@ async def update_line_users_news(id_user: int, news: bool):
     connection.close()
     
     return {'message': 'User news updated successfully'}
+
 
 # Atualização de dados de address
 async def update_line_address(id_address: int, cep: str, state_user: str, city: str, address_user: str, address_number: str, complements: str, address: AddressUpdate):
@@ -373,6 +413,7 @@ async def update_line_address(id_address: int, cep: str, state_user: str, city: 
 
     return {'message': 'Address updated successfully'}
 
+
 # Verifica a existência do usuário
 async def verify_user_exist(id_user: int):
     connection,cursor = conect_database(
@@ -389,6 +430,7 @@ async def verify_user_exist(id_user: int):
     connection.close()
 
     return result is not None
+
 
 async def verify_data_users(id_user: int, cpf: str, email: str):
     connection,cursor = conect_database(
@@ -410,3 +452,6 @@ async def verify_data_users(id_user: int, cpf: str, email: str):
     connection.close()
     
     return bool(result_cpf), bool(result_email)
+
+
+
