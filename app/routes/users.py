@@ -54,7 +54,7 @@ async def write_data(address: Address, user: User):
                             detail=f'Cannot create user. CEP {address.cep} not exist')
 
     #Processando dados    
-    address.city, address.address_user = utils.address_data_processing(address.city, address.address_user)
+    address.city, address.address_user, address.complements = utils.address_data_processing(address.city, address.address_user, address.complements)
     user.name_user, last_name = utils.username_processing(user.name_user)
     user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
     user.date_birth = utils.date_english_mode(user.date_birth)

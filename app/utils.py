@@ -56,12 +56,14 @@ def date_english_mode(date_birth: str):
 
 
 # Processar dado da tabela Address
-def address_data_processing(city:str, address_user:str):
+def address_data_processing(city:str, address_user:str, complements:str):
     if city is not None:
         city = city.strip().lower()
     if address_user is not None:
         address_user = address_user.strip().lower()
-    return city, address_user
+    if complements is not None:
+        complements = complements.strip().lower()
+    return city, address_user, complements
 
 def cep_data_processing(cep:str):
     if cep is not None:
