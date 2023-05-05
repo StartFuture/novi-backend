@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import JSONResponse
 from dao import dao
-from models.user_model import  Address, User, UserUpdate, AddressUpdate, NewsUpdate
+from models.user_model import  Address, User, UserUpdate, AddressUpdate, NewsUpdate, user_review
 import utils #import user_data_processing, username_processing, date_english_mode, address_data_processing
 
 router = APIRouter()
@@ -22,7 +23,7 @@ async def read_data():
 
 
 #Criação de Usuário
-@router.post('/user', status_code=status.HTTP_201_CREATED)
+@router.post('/register', status_code=status.HTTP_201_CREATED)
 async def write_data(address: Address, user: User):
    
     #Processando dados
@@ -32,9 +33,13 @@ async def write_data(address: Address, user: User):
     user.date_birth = utils.date_english_mode(user.date_birth)
     cpf_verify = await dao.verify_cpf(user.cpf)
     email_verify = await dao.verify_email(user.email)
-
+    ddi_verify = utils.consult_ddi(user.cellphone)
+    
     
     #Verificando Erros
+    if not ddi_verify:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                             detail=f'cannot create user. ddi {user.cellphone} is invalid')
     if cpf_verify is not False:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail=f'Cannot create user. CPF {user.cpf} alredy exist')
@@ -73,7 +78,7 @@ async def write_data(address: Address, user: User):
 
     return {'message': f'User {user.name_user}, created successfully'}
 
-@router.patch('/user/{id_user}', status_code=status.HTTP_200_OK)
+@router.patch('/{id_user}', status_code=status.HTTP_200_OK)
 async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, news_update: NewsUpdate):
 
     #Processando dados
@@ -125,3 +130,5 @@ async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, ne
 
 
     return {'message': f'User {user.name_user}, updated successfully'}
+
+

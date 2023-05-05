@@ -1,10 +1,11 @@
 from datetime import timedelta, datetime
 from typing import Dict
-
+import requests
 from jose import jwt
 
 JWT_SECRET = '--very secret key--'
 JWT_ALGORITHM = 'HS256'
+LINK_API = "https://api-paises.pages.dev/paises.json"
 
 def signJWT(user_id: str, type_jwt: str) -> Dict[str, str]:
     payload = {
@@ -63,3 +64,15 @@ def address_data_processing(cep: str, city:str, address_user:str):
     if address_user is not None:
         address_user = address_user.strip().lower()
     return cep, city, address_user
+
+# Validação de ddi
+def consult_ddi(cellphone: str):    
+    ddi = cellphone.replace('+', '')[:2]
+    list_ddi = []
+    response = requests.get(LINK_API)
+    for value in response.json().values():
+        list_ddi.append(value['ddi'])
+    if ddi in list_ddi:
+        return True
+    else: 
+        return False

@@ -4,7 +4,9 @@ import mysql.connector
 import pydantic
 
 from parameters import HOST, USER, PASSWORD, DATABASE
-from models.user_model import  AddressUpdate, UserUpdate
+
+from models.user_model import AddressUpdate, UserUpdate, user_review
+
 
 def conect_database(host, user, password, database):
 
@@ -329,3 +331,121 @@ async def verify_data_users(id_user: int, cpf: str, email: str):
     connection.close()
     
     return result_cpf is not None, result_email is not None
+
+
+def insert_review(user: user_review, id_user: int):
+    print(HOST, USER, PASSWORD, DATABASE)
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""insert into ratings_comments (name_user, perfil, stars, user_comment, id_user) values
+    ('{user.name_user}', '{user.perfil}', '{user.stars}', '{user.comment}', '{id_user}');"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+    
+
+def update_review(id_user: int, user: user_review, id_review: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""UPDATE ratings_comments SET user_comment='{user.comment}', stars={user.stars} WHERE id_user = {id_user} and id_review = {id_review};"""
+    
+    try:
+        print(action)
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+    
+
+def delete_review(id_review: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""delete ratings_comments.* from ratings_comments where id_review={id_review} ;"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+
+
+def read_review(id_user: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from ratings_comments where id_user={id_user};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+    
+
+def read_all_review():
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from ratings_comments;"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+
+
+    
+
+
+
+
+

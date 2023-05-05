@@ -21,7 +21,7 @@ class User(BaseModel):
     date_birth: str = Field(regex=r'^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$')
     email: EmailStr
     cpf: str = Field(regex=r'^[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\.?\-?[0-9]{2}$')
-    cellphone: str = Field(regex=r'^\(?[0-9]{2}\)?\s?9[0-9]{4}\-?[0-9]{4}$')
+    cellphone: str = Field(regex=r'^\+[0-9]{1,4}\s?\(?[0-9]{2}\)?\s?9[0-9]{4}\-?[0-9]{4}$')
     password_user: str = Field(min_length=8)
     news: bool
     info_conditions: bool
@@ -46,3 +46,12 @@ class UserUpdate(BaseModel):
 #Modelo para update do dado news
 class NewsUpdate(BaseModel):
     news: bool
+
+#Modelo para inserir a avaliação do usuario
+class user_review(BaseModel):
+    name_user: str
+    perfil: Optional[str]
+    stars: Optional[int]
+    comment: str
+    
+    
