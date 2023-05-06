@@ -19,7 +19,7 @@ class User(BaseModel):
     date_birth: str = Field(regex=r'^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$')
     email: EmailStr
     cpf: str = Field(regex=r'^[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\.?\-?[0-9]{2}$')
-    cellphone: str = Field(regex=r'^\(?[0-9]{2}\)?\s?9[0-9]{4}\-?[0-9]{4}$')
+    cellphone: str = Field(regex=r'^\+?[0-9]{2}\s?\(?[0-9]{2}\)?\s?9[0-9]{4}\-?[0-9]{4}$')
     password_user: str = Field(min_length=8)
     news: bool
     info_conditions: bool
@@ -38,7 +38,7 @@ class UserUpdate(BaseModel):
     name_user: Optional[str] = Field(None, min_length=3, max_length=25, regex=r'^[a-zA-Z\s]+$')
     email: Optional[EmailStr] = None
     cpf: Optional[str] = Field(None, regex=r'^[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\.?\-?[0-9]{2}$')
-    cellphone: Optional[str] = Field(None, regex=r'^\(?[0-9]{2}\)?\s?9[0-9]{4}\-?[0-9]{4}$')
+    cellphone: Optional[str] = Field(None, regex=r'^\+?[0-9]{2}\s?\(?[0-9]{2}\)?\s?9[0-9]{4}\-?[0-9]{4}$')
     password_user: Optional[str] = Field(None, min_length=8)
 
 #Modelo para update do dado news

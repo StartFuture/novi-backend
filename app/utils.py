@@ -21,7 +21,7 @@ async def user_data_processing(cpf: str, cellphone: str, email: str):
     if cpf is not None:
         cpf = cpf.replace('.', '').replace('-', '')
     if cellphone is not None:
-        cellphone = cellphone.replace('-', '').replace('(', '').replace(')', '').replace(' ', '')
+        cellphone = cellphone.replace('-', '').replace('(', '').replace(')', '').replace(' ', '').replace('+', '')
     if email is not None:
         email = email.lower().strip()
     return cpf, cellphone, email
@@ -56,7 +56,7 @@ def date_english_mode(date_birth: str):
 
 
 # Processar dado da tabela Address
-def address_data_processing(city:str, address_user:str, complements:str):
+async def address_data_processing(city:str, address_user:str, complements:str):
     if city is not None:
         city = city.strip().lower()
     if address_user is not None:

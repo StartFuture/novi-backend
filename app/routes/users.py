@@ -54,7 +54,7 @@ async def write_data(address: Address, user: User):
                             detail=f'Cannot create user. CEP {address.cep} not exist')
 
     #Processando dados    
-    address.city, address.address_user, address.complements = utils.address_data_processing(address.city, address.address_user, address.complements)
+    address.city, address.address_user, address.complements = await utils.address_data_processing(address.city, address.address_user, address.complements)
     user.name_user, last_name = utils.username_processing(user.name_user)
     user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
     user.date_birth = utils.date_english_mode(user.date_birth)
@@ -101,10 +101,23 @@ async def write_data(address: Address, user: User):
 
 @router.patch('/user/{id_user}', status_code=status.HTTP_200_OK)
 async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, news_update: NewsUpdate):
+    print(id_user)
+
+    #Verificação de CEP
+    if address.cep is not None:
+        address.cep = utils.cep_data_processing(address.cep)
+        request =requests.get('https://viacep.com.br/ws/{}/json/'.format(address.cep))
+        address_data = request.json()
+        if 'erro' not in address_data:
+            address.state_user = address_data['uf']
+            address.city = address_data['localidade']
+            address.address_user = address_data['logradouro']
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f'Cannot create user. CEP {address.cep} not exist')
 
     #Processando dados
-    address.cep = utils.cep_data_processing(address.cep)
-    address.city, address.address_user = utils.address_data_processing(address.city, address.address_user)
+    address.city, address.address_user, address.complements = await utils.address_data_processing(address.city, address.address_user, address.complements)
     user.name_user, last_name = utils.username_processing(user.name_user)
     user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
     verify_cpf, verify_email = await dao.verify_data_users(id_user, user.cpf, user.email)

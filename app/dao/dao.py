@@ -358,14 +358,16 @@ async def update_line_users(id_user: int, name_user: str, last_name: str, email:
         password=PASSWORD, 
         database=DATABASE
     )
+    if any(value is not None for _, value in user):
+        update_user = f"UPDATE users SET" + ", ".join(f" {field} = '{value}' " for field, value in user if value is not None) + f"WHERE id_user = {id_user}"
 
-    update_user = f"UPDATE users SET" + ", ".join(f" {field} = '{value}' " for field, value in user if value is not None) + f"WHERE id_user = {id_user}"
-
-    cursor.execute(update_user)
-    connection.commit()
+        cursor.execute(update_user)
+        connection.commit()
+    
 
     if last_name is not None:
         update_last_name = f"UPDATE users SET last_name = '{last_name}' WHERE id_user = {id_user}"
+        
         cursor.execute(update_last_name)
         connection.commit()
 
@@ -405,10 +407,11 @@ async def update_line_address(id_address: int, cep: str, state_user: str, city: 
         database=DATABASE
     )
 
-    update_address = f"UPDATE address SET" + ", ".join(f" {field} = '{value}' " for field, value in address if value is not None) + f"WHERE id_address = {id_address}"
+    if any(value is not None for _, value in user):
+        update_address = f"UPDATE address SET" + ", ".join(f" {field} = '{value}' " for field, value in address if value is not None) + f"WHERE id_address = {id_address}"
 
-    cursor.execute(update_address)
-    connection.commit()
+        cursor.execute(update_address)
+        connection.commit()
     connection.close()
 
     return {'message': 'Address updated successfully'}
