@@ -3,8 +3,7 @@ from typing import Dict
 import requests
 from jose import jwt
 
-JWT_SECRET = '--very secret key--'
-JWT_ALGORITHM = 'HS256'
+from parameters import JWT_SECRET, JWT_ALGORITHM
 LINK_API = "https://api-paises.pages.dev/paises.json"
 
 def signJWT(user_id: str, type_jwt: str) -> Dict[str, str]:

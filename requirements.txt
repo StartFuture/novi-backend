@@ -18,9 +18,11 @@ httpcore==0.16.3
 httpx==0.23.3
 idna==3.4
 iniconfig==2.0.0
+mysql-connector-python==8.0.33
 packaging==23.0
 passlib==1.7.4
 pluggy==1.0.0
+protobuf==3.20.3
 psycopg2-binary==2.9.6
 pyasn1==0.4.8
 pycparser==2.21
