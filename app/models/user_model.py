@@ -53,5 +53,9 @@ class user_review(BaseModel):
     perfil: Optional[str]
     stars: Optional[int]
     comment: str
+
+#Modelo para perfil de usuario
+class perfil(BaseModel):
+    user_perfil: str
     
     

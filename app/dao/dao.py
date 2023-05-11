@@ -5,7 +5,7 @@ import pydantic
 
 from parameters import HOST, USER, PASSWORD, DATABASE
 
-from models.user_model import AddressUpdate, UserUpdate, user_review
+from models.user_model import AddressUpdate, UserUpdate, user_review, perfil
 
 
 def conect_database(host, user, password, database):
@@ -25,7 +25,7 @@ def conect_database(host, user, password, database):
     return connetion, cursor
 
 
-def verify_user_exist(email: str):
+def verify_user_exist_by_email(email: str):
 
     """Essa função tem como objetivo fazer uma consulta
     na tabela users para saber se existe um usuario com
@@ -54,7 +54,7 @@ def verify_user_exist(email: str):
         return None
 
 
-def verify_token_exist(id_user: int):
+def verify_token_exist_by_id(id_user: int):
     """Essa função tem como objetivo fazer uma consulta
     na tabela two_auth para saber se existe a um token
     correspondente a chave estrangeira id_user.
@@ -443,9 +443,110 @@ def read_all_review():
         return result
 
 
+def insert_perfil(user: perfil, id_user: int):
+    print(HOST, USER, PASSWORD, DATABASE)
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""insert into perfil (perfil_user, id_user) values ('{user.user_perfil}', {id_user});"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+
+    
+def read_perfil(id_user: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from perfil where id_user={id_user};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+
+
+def read_all_perfil():
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = """select * from perfil;"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+
+
+def update_perfil(id_user: int, user: perfil, id_perfil: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""UPDATE perfil SET perfil_user='{user.user_perfil}' WHERE id_user = {id_user} and id_perfil = {id_perfil};"""
+    
+    try:
+        print(action)
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
     
 
+def delete_perfil(id_user: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
 
-
-
-
+    action = f"""delete perfil.* from perfil where id_user={id_user} ;"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
