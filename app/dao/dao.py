@@ -443,7 +443,7 @@ def read_all_review():
         return result
 
 
-def insert_perfil(user: perfil, id_user: int):
+def insert_profile(user: perfil, id_user: int):
     print(HOST, USER, PASSWORD, DATABASE)
     connection, cursor = conect_database(
         host=HOST,
@@ -452,7 +452,7 @@ def insert_perfil(user: perfil, id_user: int):
         database=DATABASE
     )
 
-    action = f"""insert into perfil (perfil_user, id_user) values ('{user.user_perfil}', {id_user});"""
+    action = f"""insert into user_profile (profile_user, id_user) values ('{user.user_perfil}', {id_user});"""
     
     try:
         cursor.execute(action)
@@ -465,7 +465,7 @@ def insert_perfil(user: perfil, id_user: int):
         return True
 
     
-def read_perfil(id_user: int):
+def read_profile(id_user: int):
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -473,7 +473,7 @@ def read_perfil(id_user: int):
         database=DATABASE
     )
 
-    query = f"""select * from perfil where id_user={id_user};"""
+    query = f"""select * from user_profile where id_user={id_user};"""
     
     try:
         cursor.execute(query)
@@ -487,7 +487,7 @@ def read_perfil(id_user: int):
         return result
 
 
-def read_all_perfil():
+def read_all_profile():
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -495,7 +495,7 @@ def read_all_perfil():
         database=DATABASE
     )
 
-    query = """select * from perfil;"""
+    query = """select * from  user_profile;"""
     
     try:
         cursor.execute(query)
@@ -509,7 +509,7 @@ def read_all_perfil():
         return result
 
 
-def update_perfil(id_user: int, user: perfil, id_perfil: int):
+def update_profile(id_user: int, user: perfil, id_profile: int):
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -517,7 +517,7 @@ def update_perfil(id_user: int, user: perfil, id_perfil: int):
         database=DATABASE
     )
 
-    action = f"""UPDATE perfil SET perfil_user='{user.user_perfil}' WHERE id_user = {id_user} and id_perfil = {id_perfil};"""
+    action = f"""UPDATE user_profile SET profile_user='{user.user_perfil}' WHERE id_user = {id_user} and id_profile = {id_profile};"""
     
     try:
         print(action)
@@ -531,7 +531,7 @@ def update_perfil(id_user: int, user: perfil, id_perfil: int):
         return True
     
 
-def delete_perfil(id_user: int):
+def delete_profile(id_user: int):
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -539,7 +539,7 @@ def delete_perfil(id_user: int):
         database=DATABASE
     )
 
-    action = f"""delete perfil.* from perfil where id_user={id_user} ;"""
+    action = f"""delete user_profile.* from user_profile where id_user={id_user} ;"""
     
     try:
         cursor.execute(action)
