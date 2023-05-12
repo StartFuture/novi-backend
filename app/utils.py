@@ -45,7 +45,7 @@ def username_processing(name_user: str):
         return name_user, last_name
 
 
-# Colocar date para formato inglês
+# Colocar date para formato YYYY/MM/DD
 def date_english_mode(date_birth: str):
     date = date_birth.strip().replace('/', '')
     date_year = date[4:8]
@@ -53,6 +53,11 @@ def date_english_mode(date_birth: str):
     date_day = date[:2]
     date_birth = str(date_year + date_month + date_day)
     return date_birth
+
+
+# Formatar date de dicionário para formato DD/MM/YYYY
+def format_date(date):
+    return f"{date.day}/{date.month}/{date.year}"
 
 
 # Processar dado da tabela Address
@@ -65,6 +70,8 @@ async def address_data_processing(city:str, address_user:str, complements:str):
         complements = complements.strip().lower()
     return city, address_user, complements
 
+
+# Processar dado cep
 def cep_data_processing(cep:str):
     if cep is not None:
         cep = cep.replace('-', '')

@@ -26,15 +26,19 @@ def read_data():
 
 #Lista usuário por id
 @router.get('/{id_user}')
-async def read_user_data(id_user: int):
+async def read_user_data(id_user: int, status_code=status.HTTP_302_OK):
     query_user, id_address = await dao.select_user(id_user)
+    id_address = int(id_address['id_address'])
 
     if query_user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'User not exist')
     
+    query_user['date_birth'] = utils.format_date(query_user['date_birth'])
+    
     query_address = await dao.select_address(id_address)
-    return query_user, query_address
+    data = {'user': query_user, 'address': query_address}
+    return JSONResponse(content=data)
 
 
 #Criação de Usuário
@@ -101,7 +105,6 @@ async def write_data(address: Address, user: User):
 
 @router.patch('/user/{id_user}', status_code=status.HTTP_200_OK)
 async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, news_update: NewsUpdate):
-    print(id_user)
 
     #Verificação de CEP
     if address.cep is not None:

@@ -254,7 +254,7 @@ async def select_address(id_address: int):
         database=DATABASE
     )
 
-    query = f"SELECT * FROM address WHERE id_address = {id_address['id_address']}"
+    query = f"SELECT * FROM address WHERE id_address = {id_address}"
 
     cursor.execute(query)
     query_address = cursor.fetchone()
@@ -351,7 +351,7 @@ async def verify_email(email: str):
 
 
 # Atualização de dados do usuário
-async def update_line_users(id_user: int, name_user: str, last_name: str, email: str, cpf: str, cellphone: str, password_user: str, user: UserUpdate):
+async def update_line_users(id_user: int, last_name: str, user: UserUpdate):
     connection,cursor = conect_database(
         host=HOST, 
         user=USER, 
@@ -399,7 +399,7 @@ async def update_line_users_news(id_user: int, news: bool):
 
 
 # Atualização de dados de address
-async def update_line_address(id_address: int, cep: str, state_user: str, city: str, address_user: str, address_number: str, complements: str, address: AddressUpdate):
+async def update_line_address(id_address: int, address: AddressUpdate):
     connection,cursor = conect_database(
         host=HOST, 
         user=USER, 
@@ -407,7 +407,7 @@ async def update_line_address(id_address: int, cep: str, state_user: str, city: 
         database=DATABASE
     )
 
-    if any(value is not None for _, value in user):
+    if any(value is not None for _, value in address):
         update_address = f"UPDATE address SET" + ", ".join(f" {field} = '{value}' " for field, value in address if value is not None) + f"WHERE id_address = {id_address}"
 
         cursor.execute(update_address)
