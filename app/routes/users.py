@@ -25,8 +25,8 @@ def read_data():
 
 
 #Lista usuário por id
-@router.get('/{id_user}')
-async def read_user_data(id_user: int, status_code=status.HTTP_302_OK):
+@router.get('/{id_user}', status_code=status.HTTP_302_FOUND)
+async def read_user_data(id_user: int,):
     query_user, id_address = await dao.select_user(id_user)
     id_address = int(id_address['id_address'])
 

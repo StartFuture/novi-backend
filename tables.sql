@@ -14,10 +14,9 @@ create table table_users (
     password_user varchar(255),
     news boolean,
     info_conditions boolean,
+    share_data boolean,
     PRIMARY KEY (id_user)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-use novi;
 
 create table table_address (
     id_address int(11) not null AUTO_INCREMENT,
@@ -27,6 +26,5 @@ create table table_address (
     address_user varchar(255),
     address_number varchar(5),
     complements varchar(255),
-    PRIMARY KEY (id_address),
-    FOREIGN KEY (id_user) REFERENCES table_users(id_users)    
+    PRIMARY KEY (id_address)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
