@@ -68,6 +68,7 @@ async def write_data(address: Address, user: User):
         password_user= user.password_user,
         news= user.news,
         info_conditions= user.info_conditions,
+        share_data= user.share_data
     )
 
 

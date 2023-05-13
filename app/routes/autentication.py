@@ -20,7 +20,7 @@ def auth(user: models_auth.UserModel) -> dict:
     query_result = dao.verify_user_exist(user.email)# Verificação de existencia de usuario
     if query_result:# Se usuario existe:
 
-        if user.password == query_result['password_user']:# Validçãp de senha do usuario
+        if user.password_user == query_result['password_user']:# Validçãp de senha do usuario
             token_result = dao.verify_token_exist(query_result['id_user'])# Verificação de existencia de token
 
             if token_result:#Se token existe:
@@ -28,7 +28,7 @@ def auth(user: models_auth.UserModel) -> dict:
                 if not is_revoked:#Se token não esta revogado:
                     date_now = datetime.now().date()# Data do dia atual.
 
-                    if(date_now.day - token_result['date_experience'].day) <= 3:#Se data de expiração# e menor ou igual a 3 então token valido:
+                    if(date_now.day - token_result['date_expires'].day) <= 3:#Se data de expiração# e menor ou igual a 3 então token valido:
                         return {'message': 'Token is valid'}
 
                     else:#Se data de expiração é maior que 3 entao token e invalido:
