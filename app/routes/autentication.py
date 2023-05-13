@@ -21,7 +21,7 @@ def auth(user: models_auth.UserModel) -> dict:
     if query_result:# Se usuario existe:
 
         if user.password_user == query_result['password_user']:# Validçãp de senha do usuario
-            token_result = dao.verify_token_exist(query_result['id_user'])# Verificação de existencia de token
+            token_result = False #dao.verify_token_exist(query_result['id_user'])# Verificação de existencia de token
 
             if token_result:#Se token existe:
                 is_revoked = dao.verify_token_is_revoked(id_token=token_result['id_token'])# Verificação se token esta revogado

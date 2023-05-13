@@ -51,6 +51,14 @@ def verify_user_exist(email: str):
     else:
         return None
 
+def verify_user_exist_by_id(id_user: int):
+    connection,cursor = conect_database(host=HOST, user=USER, password=PASSWORD, database=DATABASE)
+    query = f"""SELECT id_user FROM table_users WHERE id_user = {id_user}"""
+    cursor.execute(query)
+    result = cursor.fetchone()
+    connection.close()
+
+    return result is not None
 
 def verify_token_exist(id_user: int):
     """Essa função tem como objetivo fazer uma consulta
@@ -216,7 +224,7 @@ def select_all():
         password=PASSWORD, 
         database=DATABASE
     )
-    query = "SELECT * FROM table_users;"
+    query = "SELECT * FROM table_users tu;"
 
     cursor.execute(query)
     user_list = cursor.fetchall()
@@ -233,6 +241,7 @@ async def insert_new_line_user(name_user: str, last_name: str, date_birth: str, 
     VALUES 
     ('{name_user}', '{last_name}', '{date_birth}', '{email}', '{cpf}', '{cellphone}', {id_address}, '{password_user}', {news}, {info_conditions}, {share_data});"""
     cursor.execute(create_user)
+
 async def select_user(id_user: int):
     connection,cursor = conect_database(
         host=HOST, 
@@ -241,12 +250,12 @@ async def select_user(id_user: int):
         database=DATABASE
     )
 
-    query_id = f"SELECT * FROM users WHERE id_user = {id_user}"
+    query_id = f"SELECT * FROM table_users WHERE id_user = {id_user}"
 
     cursor.execute(query_id)
     query_user = cursor.fetchone()
 
-    query_id_address = f"SELECT id_address FROM users WHERE id_user = {id_user}"
+    query_id_address = f"SELECT id_address FROM table_users WHERE id_user = {id_user}"
     cursor.execute(query_id_address)
     id_address = cursor.fetchone()
     connection.close()
@@ -295,7 +304,7 @@ async def insert_new_line_address(cep: str, state_user: str, city: str, address_
     return result, {'message': 'Address created successfully'}
 
 
-async def insert_new_line_user(name_user: str, last_name: str, date_birth: str, email: str, cpf: str, cellphone: str, id_address: int, password_user: str, news: bool, info_conditions:bool):
+async def insert_new_line_user(name_user: str, last_name: str, date_birth: str, email: str, cpf: str, cellphone: str, id_address: int, password_user: str, news: bool, info_conditions:bool, share_data:bool):
     connection,cursor = conect_database(
         host=HOST, 
         user=USER, 
@@ -304,10 +313,10 @@ async def insert_new_line_user(name_user: str, last_name: str, date_birth: str, 
     )
 
     create_user = f"""
-    INSERT INTO users 
-    (name_user, last_name, date_birth, email, cpf, cellphone, id_address, password_user, news, info_conditions) 
+    INSERT INTO table_users 
+    (name_user, last_name, date_birth, email, cpf, cellphone, id_address, password_user, news, info_conditions, share_data) 
     VALUES 
-    ('{name_user}', '{last_name}', '{date_birth}', '{email}', '{cpf}', '{cellphone}', {id_address}, '{password_user}', {news}, {info_conditions});"""
+    ('{name_user}', '{last_name}', '{date_birth}', '{email}', '{cpf}', '{cellphone}', {id_address}, '{password_user}', {news}, {info_conditions}, {share_data});"""
     
     cursor.execute(create_user)
 
@@ -330,7 +339,7 @@ async def verify_data_overwrite(cpf: str, email: str):
     cursor.execute(query_cpf)
     result_cpf = cursor.fetchone()
 
-    query_email = f"SELECT email FROM users WHERE email= '{email}'"
+    query_email = f"SELECT email FROM table_users WHERE email= '{email}'"
 
     cursor.execute(query_email)
     result_email = cursor.fetchone()
@@ -357,20 +366,11 @@ async def verify_email(email: str):
 
 
 # Atualização de dados do usuário
-async def update_line_users(id_user: int, last_name: str, user: UserUpdate):
-    connection,cursor = conect_database(
-        host=HOST, 
-        user=USER, 
-        password=PASSWORD, 
-        database=DATABASE
-    )
-    if any(value is not None for _, value in user):
-        update_user = f"UPDATE table_users SET" + ", ".join(f" {field} = '{value}' " for field, value in user if value is not None) + f"WHERE id_user = {id_user}"
-
-        cursor.execute(update_user)
-        connection.commit()
-    
-
+async def update_line_users(id_user: int, name_user: str, last_name: str, email: str, cpf: str, cellphone: str, password_user: str, user: UserUpdate):
+    connection,cursor = conect_database(host=HOST, user=USER, password=PASSWORD, database=DATABASE)
+    update_user = f"UPDATE table_users SET" + ", ".join(f" {field} = '{value}' " for field, value in user if value is not None) + f"WHERE id_user = {id_user}"
+    cursor.execute(update_user)
+    connection.commit()
     if last_name is not None:
         update_last_name = f"UPDATE table_users SET last_name = '{last_name}' WHERE id_user = {id_user}"
         cursor.execute(update_last_name)
@@ -402,40 +402,14 @@ async def update_line_users_news(id_user: int, news: bool):
 
 
 # Atualização de dados de address
-async def update_line_address(id_address: int, address: AddressUpdate):
-    connection,cursor = conect_database(
-        host=HOST, 
-        user=USER, 
-        password=PASSWORD, 
-        database=DATABASE
-    )
-
-    if any(value is not None for _, value in address):
-        update_address = f"UPDATE table_address SET" + ", ".join(f" {field} = '{value}' " for field, value in address if value is not None) + f"WHERE id_address = {id_address}"
-
-        cursor.execute(update_address)
-        connection.commit()
+async def update_line_address(id_address: int, cep: str, state_user: str, city: str, address_user: str, address_number: str, complements: str, address: AddressUpdate):
+    connection,cursor = conect_database(host=HOST, user=USER, password=PASSWORD, database=DATABASE)
+    update_address = f"UPDATE table_address SET" + ", ".join(f" {field} = '{value}' " for field, value in address if value is not None) + f"WHERE id_address = {id_address}"
+    cursor.execute(update_address)
+    connection.commit()
     connection.close()
 
     return {'message': 'Address updated successfully'}
-
-# Verifica a existência do usuário
-# async def verify_user_exist(id_user: int):
-    connection,cursor = conect_database(
-        host=HOST, 
-        user=USER, 
-        password=PASSWORD, 
-        database=DATABASE
-    )
-
-    query = f"SELECT id_user FROM table_users WHERE id_user = {id_user}"
-
-    cursor.execute(query)
-    result = cursor.fetchone()
-    connection.close()
-
-    return bool(result)
-
 
 async def verify_data_users(id_user: int, cpf: str, email: str):
     connection,cursor = conect_database(
