@@ -28,12 +28,12 @@ def read_data():
 @router.get('/{id_user}', status_code=status.HTTP_302_FOUND)
 async def read_user_data(id_user: int,):
     query_user, id_address = await dao.select_user(id_user)
-    id_address = int(id_address['id_address'])
 
     if query_user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'User not exist')
     
+    id_address = int(id_address['id_address'])
     query_user['date_birth'] = utils.format_date(query_user['date_birth'])
     
     query_address = await dao.select_address(id_address)
@@ -61,7 +61,6 @@ async def write_data(address: Address, user: User):
     address.city, address.address_user, address.complements = await utils.address_data_processing(address.city, address.address_user, address.complements)
     user.name_user, last_name = utils.username_processing(user.name_user)
     user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
-    user.date_birth = utils.date_english_mode(user.date_birth)
     cpf_verify, email_verify = await dao.verify_data_overwrite(user.cpf, user.email)
     
     #Verificando Erros
@@ -98,6 +97,7 @@ async def write_data(address: Address, user: User):
         password_user= user.password_user,
         news= user.news,
         info_conditions= user.info_conditions,
+        share_data= user.share_data
     )
 
 
