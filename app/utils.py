@@ -1,12 +1,18 @@
 from datetime import timedelta, datetime
 from typing import Dict
 import requests
-from jose import jwt
+from jose import jwt, JWTError
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, status, HTTPException
 
 from parameters import JWT_SECRET, JWT_ALGORITHM
 LINK_API = "https://api-paises.pages.dev/paises.json"
 
-def signJWT(user_id: str, type_jwt: str) -> Dict[str, str]:
+
+oauth = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+
+'''def signJWT(user_id: str, type_jwt: str) -> Dict[str, str]:
     payload = {
         "user_id": user_id,
         "exp": 3,
@@ -14,7 +20,7 @@ def signJWT(user_id: str, type_jwt: str) -> Dict[str, str]:
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
-    return {'access_token': token}
+    return {'access_token': token}'''
 
 
 # Processar dados de usuário
@@ -75,3 +81,29 @@ def consult_ddi(cellphone: str):
         return True
     else: 
         return False
+    
+
+def decrypt_token(token: str) -> dict[str]:
+    result = jwt.decode(token=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
+    
+    return result
+
+
+def signJWT(user_id: str) -> dict[str]:
+    payload = {
+        "sub": user_id,
+        "exp": datetime.utcnow() + timedelta(minutes=30),
+    }
+    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    
+    return {'access_token': token}
+
+
+def verify_token(token: str = Depends(oauth)): # transformar em decorator
+
+    try:
+        payload = jwt.decode(token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
+        return payload
+    except JWTError:
+        raise HTTPException(detail={'msg': 'missing token'}, 
+                             status_code=status.HTTP_401_UNAUTHORIZED)

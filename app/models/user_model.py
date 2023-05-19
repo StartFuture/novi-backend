@@ -58,4 +58,8 @@ class user_review(BaseModel):
 class perfil(BaseModel):
     user_perfil: str
     
+
+class objective_destination(BaseModel):
+    objetive: str
+    destination: str
     

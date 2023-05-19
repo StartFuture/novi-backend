@@ -1,6 +1,8 @@
 from datetime import datetime
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi.responses import JSONResponse
+from fastapi.security import  OAuth2PasswordBearer
 
 from dao import dao
 import utils
@@ -8,6 +10,8 @@ from models import models_auth
 
 
 router = APIRouter()
+
+oauth = OAuth2PasswordBearer(tokenUrl="login")
 
 
 @router.post("/login", status_code=status.HTTP_200_OK)
@@ -40,6 +44,12 @@ def auth(user: models_auth.UserModel) -> dict:
     else:#se usuario não existe:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")#Mensagem informando que usuario não foi encontrado
     
+       
 
-
-
+@router.get("/get_user_by_id", status_code=status.HTTP_200_OK)
+def get_user_by_id(token: str = Depends(utils.verify_token)):
+    print(token.token)
+    #token_result = utils.decrypt_token(token)
+    #print(token_result)
+    #query = dao.verify_user_exist_by_id_join_address(token_result)
+    return JSONResponse(content='it´s working')

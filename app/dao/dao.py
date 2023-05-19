@@ -5,7 +5,7 @@ import pydantic
 
 from parameters import HOST, USER, PASSWORD, DATABASE
 
-from models.user_model import AddressUpdate, UserUpdate, user_review, perfil
+from models.user_model import AddressUpdate, UserUpdate, user_review, perfil, objective_destination
 
 
 def conect_database(host, user, password, database):
@@ -311,7 +311,7 @@ async def update_line_address(id_address: int, cep: str, state_user: str, city: 
     return {'message': 'Address updated successfully'}
 
 # Verifica a existência do usuário
-async def verify_user_exist(id_user: int):
+async def verify_user_exist_by_id(id_user: int):
     connection,cursor = conect_database(host=HOST, user=USER, password=PASSWORD, database=DATABASE)
     query = f"""SELECT id_user FROM users WHERE id_user = {id_user}"""
     cursor.execute(query)
@@ -550,3 +550,134 @@ def delete_profile(id_user: int):
         connection.commit()
         connection.close()
         return True
+
+
+def verify_user_exist_by_id_join_address(id_user: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from table_users join table_address where table_users.id_user = {id_user};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+
+#Crud objetivo e destino da viagem
+def insert_objective_and_destination(obj_dest: objective_destination , id_user: int):
+    print(HOST, USER, PASSWORD, DATABASE)
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""insert into destination_and_objective (destination, objective, id_user) value ('{obj_dest.destination}', '{obj_dest.objetive}', {id_user});"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+    
+
+def update_objective_and_destination(id_user: int, obj_dest: objective_destination, id_dest_obj: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""UPDATE destination_and_objective SET destination='{obj_dest.destination}', objective='{obj_dest.objetive}' WHERE id_user = {id_user} and id_dest_obj = {id_dest_obj};"""
+    
+    try:
+        print(action)
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+    
+
+def delete_objective_and_destination(id_dest_obj: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""delete destination_and_objective.* from destination_and_objective where id_dest_obj = {id_dest_obj} ;"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+
+
+def read_objective_and_destination(id_dest_obj: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from destination_and_objective where id_dest_obj= {id_dest_obj};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+    
+
+def read_all_objective_and_destination():
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from destination_and_objective;"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
