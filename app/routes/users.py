@@ -42,7 +42,7 @@ async def read_user_data(id_user: int,):
 
 
 #Criação de Usuário
-@router.post('/user', status_code=status.HTTP_201_CREATED)
+@router.post('/create_user', status_code=status.HTTP_201_CREATED)
 async def write_data(address: Address, user: User):
    
    #Verificação de CEP
@@ -103,7 +103,7 @@ async def write_data(address: Address, user: User):
 
     return JSONResponse(content={'message': f'User {user.name_user}, created successfully'})
 
-@router.patch('/user/{id_user}', status_code=status.HTTP_200_OK)
+@router.patch('/update_user/{id_user}', status_code=status.HTTP_200_OK)
 async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, news_update: NewsUpdate):
 
     #Verificação de CEP
@@ -139,14 +139,14 @@ async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, ne
     
     #atualizando usuário
     result, message = await dao.update_line_users(
-        id_user = id_user,
+        id_user= id_user,
         name_user= user.name_user,
         last_name= last_name,
         email= user.email,
         cpf= user.cpf,
         cellphone= user.cellphone,
         password_user= user.password_user,
-        user = user
+        user= user
     )
 
     await dao.update_line_users_news(

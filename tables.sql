@@ -1,5 +1,3 @@
-create database novi;
-
 use novi;
 
 create table table_address (
@@ -10,7 +8,7 @@ create table table_address (
     address_user varchar(255),
     address_number varchar(5),
     complements varchar(255),
-    PRIMARY KEY (id_address)
+    PRIMARY KEY (id_address)    
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 create table table_users (
@@ -21,11 +19,49 @@ create table table_users (
     email varchar(30),
     cpf varchar(11),
     cellphone varchar(30),
+    id_address varchar(255),
     password_user varchar(255),
-    id_address int (11),
     news boolean,
     info_conditions boolean,
-    share_data boolean,
-    PRIMARY KEY (id_user),
-    FOREIGN KEY (id_address) REFERENCES table_address(id_address)
+    share_data boolean
+    PRIMARY KEY (id_user)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+create table two_auth(
+`id_token` INT(11) NOT NULL AUTO_INCREMENT,
+`date_expires` date not null,
+`id_user` int(11) not null,
+`user_code` char(6), 
+primary key(id_token),
+FOREIGN KEY (`id_user`) REFERENCES `table_users` (`id_user`)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+create table ratings_comments(
+id_review int(11) not null auto_increment,
+img blob,
+id_user int(11) not null,
+name_user varchar(255) not null,
+perfil varchar(20) not null,
+stars int(5),
+user_comment varchar(400),
+primary key(id_review),
+FOREIGN KEY (id_user) REFERENCES users (id_user)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+create table perfil(
+id_perfil int(11)not null auto_increment,
+perfil_user varchar(20) not null,
+id_user int(11) not null,
+primary key(id_perfil),
+foreign key(id_user) references users (id_user)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+create table table_destinations (
+    id_destination int(11) not null AUTO_INCREMENT,
+    continent varchar(9),
+    country varchar(255),
+    state_destination varchar(2),
+    city varchar(255),
+    journey varchar(255),
+    PRIMARY KEY (id_destination)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
