@@ -5,7 +5,7 @@ import pydantic
 
 from parameters import HOST, USER, PASSWORD, DATABASE
 
-from models.user_model import AddressUpdate, UserUpdate, user_review, perfil, objective_destination
+from models.user_model import AddressUpdate, UserUpdate, user_review, perfil, objective
 
 
 def conect_database(host, user, password, database):
@@ -574,7 +574,7 @@ def verify_user_exist_by_id_join_address(id_user: int):
         return result
 
 #Crud objetivo e destino da viagem
-def insert_objective_and_destination(obj_dest: objective_destination , id_user: int):
+def insert_objective(objective: objective, id_destination: int):
     print(HOST, USER, PASSWORD, DATABASE)
     connection, cursor = conect_database(
         host=HOST,
@@ -583,7 +583,7 @@ def insert_objective_and_destination(obj_dest: objective_destination , id_user: 
         database=DATABASE
     )
 
-    action = f"""insert into destination_and_objective (destination, objective, id_user) value ('{obj_dest.destination}', '{obj_dest.objetive}', {id_user});"""
+    action = f"""insert into table_objectives (objective, id_destination) value ('{objective.objetive}', {id_destination});"""
     
     try:
         cursor.execute(action)
@@ -596,7 +596,7 @@ def insert_objective_and_destination(obj_dest: objective_destination , id_user: 
         return True
     
 
-def update_objective_and_destination(id_user: int, obj_dest: objective_destination, id_dest_obj: int):
+def update_objective(objective: objective, id_destination: int, id_objective: int):
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -604,7 +604,7 @@ def update_objective_and_destination(id_user: int, obj_dest: objective_destinati
         database=DATABASE
     )
 
-    action = f"""UPDATE destination_and_objective SET destination='{obj_dest.destination}', objective='{obj_dest.objetive}' WHERE id_user = {id_user} and id_dest_obj = {id_dest_obj};"""
+    action = f"""UPDATE table_objectives SET objective='{objective.objetive}' WHERE id_objective = {id_objective} and id_destination = {id_destination};"""
     
     try:
         print(action)
@@ -618,7 +618,7 @@ def update_objective_and_destination(id_user: int, obj_dest: objective_destinati
         return True
     
 
-def delete_objective_and_destination(id_dest_obj: int):
+def delete_objective(id_objective: int):
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -626,7 +626,7 @@ def delete_objective_and_destination(id_dest_obj: int):
         database=DATABASE
     )
 
-    action = f"""delete destination_and_objective.* from destination_and_objective where id_dest_obj = {id_dest_obj} ;"""
+    action = f"""delete table_objectives.* from table_objectives where id_objective = {id_objective} ;"""
     
     try:
         cursor.execute(action)
@@ -639,7 +639,7 @@ def delete_objective_and_destination(id_dest_obj: int):
         return True
 
 
-def read_objective_and_destination(id_dest_obj: int):
+def read_objective(id_objective: int):
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -647,7 +647,7 @@ def read_objective_and_destination(id_dest_obj: int):
         database=DATABASE
     )
 
-    query = f"""select * from destination_and_objective where id_dest_obj= {id_dest_obj};"""
+    query = f"""select * from table_objectives where id_objective= {id_objective};"""
     
     try:
         cursor.execute(query)
@@ -661,7 +661,7 @@ def read_objective_and_destination(id_dest_obj: int):
         return result
     
 
-def read_all_objective_and_destination():
+def read_all_objective():
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -669,7 +669,7 @@ def read_all_objective_and_destination():
         database=DATABASE
     )
 
-    query = f"""select * from destination_and_objective;"""
+    query = f"""select * from table_objectives;"""
     
     try:
         cursor.execute(query)
