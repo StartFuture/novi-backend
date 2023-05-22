@@ -51,6 +51,14 @@ def verify_user_exist(email: str):
     else:
         return None
 
+def verify_user_exist_by_id(id_user: int):
+    connection,cursor = conect_database(host=HOST, user=USER, password=PASSWORD, database=DATABASE)
+    query = f"""SELECT id_user FROM table_users WHERE id_user = {id_user}"""
+    cursor.execute(query)
+    result = cursor.fetchone()
+    connection.close()
+
+    return result is not None
 
 def verify_token_exist(id_user: int):
     """Essa função tem como objetivo fazer uma consulta
@@ -66,7 +74,7 @@ def verify_token_exist(id_user: int):
         database=DATABASE
     )
 
-    query = f"""select id_token, date_experience, id_user from two_auth where id_user = '{id_user}';"""
+    query = f"""select id_token, date_expires, id_user from two_auth where id_user = '{id_user}';"""
 
     cursor.execute(query)
 
@@ -123,7 +131,7 @@ def update_token(id_user: int):
         database=DATABASE
     )
 
-    query = f"""update two_auth set date_experience = '{datetime.today().date()}' where id_user = '{id_user}';"""
+    query = f"""update two_auth set date_expires = '{datetime.today().date()}' where id_user = '{id_user}';"""
 
     cursor.execute(query)
     connection.commit()
@@ -138,7 +146,7 @@ def insert_new_token_and_code(id_user: int):
         database=DATABASE
     )
 
-    query = f"""insert into two_auth (id_user, date_experience) values ('{id_user}', '{datetime.today().date()}');"""
+    query = f"""insert into two_auth (id_user, date_expires) values ('{id_user}', '{datetime.today().date()}');"""
 
     cursor.execute(query)
     connection.commit()
@@ -153,7 +161,7 @@ def insert_new_code(id_user: int, user_code: int,):
         database=DATABASE
     )
 
-    query = f"""insert into two_auth (id_user, user_code, date_experience)
+    query = f"""insert into two_auth (id_user, user_code, date_expires)
          values (default , {id_user}, {user_code}, "{datetime.today().date()}");"""
 
     cursor.execute(query)
@@ -216,7 +224,8 @@ def select_all():
         password=PASSWORD, 
         database=DATABASE
     )
-    query = "SELECT * FROM table_users;"
+    
+    query = "SELECT * FROM table_users tu;"
 
     cursor.execute(query)
     user_list = cursor.fetchall()
@@ -224,6 +233,15 @@ def select_all():
 
     return user_list
 
+
+async def insert_new_line_user(name_user: str, last_name: str, date_birth: str, email: str, cpf: str, cellphone: str, id_address: int, password_user: str, news: bool, info_conditions:bool, share_data:bool):
+    connection,cursor = conect_database(host=HOST, user=USER, password=PASSWORD, database=DATABASE)   
+    create_user = f"""
+    INSERT INTO table_users 
+    (name_user, last_name, date_birth, email, cpf, cellphone, id_address, password_user, news, info_conditions, share_data) 
+    VALUES 
+    ('{name_user}', '{last_name}', '{date_birth}', '{email}', '{cpf}', '{cellphone}', {id_address}, '{password_user}', {news}, {info_conditions}, {share_data});"""
+    cursor.execute(create_user)
 
 async def select_user(id_user: int):
     connection,cursor = conect_database(
@@ -238,7 +256,8 @@ async def select_user(id_user: int):
     cursor.execute(query_id)
     query_user = cursor.fetchone()
 
-    query_id_address = f"SELECT id_address FROM table_users WHERE id_user = {id_user}" 
+    query_id_address = f"SELECT id_address FROM table_users WHERE id_user = {id_user}"
+
     cursor.execute(query_id_address)
     id_address = cursor.fetchone()
     connection.close()
@@ -299,7 +318,7 @@ async def insert_new_line_user(name_user: str, last_name: str, date_birth: str, 
 
     create_user = f"""
     INSERT INTO table_users 
-    (name_user, last_name, date_birth, email, cpf, cellphone, id_address, password_user, news, info_conditions) 
+    (name_user, last_name, date_birth, email, cpf, cellphone, id_address, password_user, news, info_conditions, share_data) 
     VALUES 
     ('{name_user}', '{last_name}', '{date_birth}', '{email}', '{cpf}', '{cellphone}', {id_address}, '{password_user}', {news}, {info_conditions}, {share_data});"""
     
@@ -364,7 +383,6 @@ async def update_line_users(id_user: int, last_name: str, user: UserUpdate):
         cursor.execute(update_user)
         connection.commit()
     
-
     if last_name is not None:
         update_last_name = f"UPDATE table_users SET last_name = '{last_name}' WHERE id_user = {id_user}"
         
@@ -412,6 +430,7 @@ async def update_line_address(id_address: int, address: AddressUpdate):
 
         cursor.execute(update_address)
         connection.commit()
+
     connection.close()
 
     return {'message': 'Address updated successfully'}
@@ -455,6 +474,4 @@ async def verify_data_users(id_user: int, cpf: str, email: str):
     connection.close()
     
     return bool(result_cpf), bool(result_email)
-
-
-
+  

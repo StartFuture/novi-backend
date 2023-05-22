@@ -25,8 +25,10 @@ def read_data():
 
 
 #Lista usuário por id
+
 @router.get('/{id_user}', status_code=status.HTTP_302_FOUND)
 async def read_user_data(id_user: int,):
+
     query_user, id_address = await dao.select_user(id_user)
 
     if query_user is None:
@@ -124,7 +126,7 @@ async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, ne
     user.name_user, last_name = utils.username_processing(user.name_user)
     user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
     verify_cpf, verify_email = await dao.verify_data_users(id_user, user.cpf, user.email)
-    verify_user = await dao.verify_user_exist(id_user)
+    verify_user = dao.verify_user_exist_by_id(id_user)
 
     #Verificando Erros
     if not verify_user:
