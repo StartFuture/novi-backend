@@ -27,15 +27,7 @@ create table table_users (
     PRIMARY KEY (id_user)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create table two_auth(
-`id_token` INT(11) NOT NULL AUTO_INCREMENT,
-`date_expires` date not null,
-`id_user` int(11) not null,
-`user_code` char(6), 
-primary key(id_token),
-FOREIGN KEY (`id_user`) REFERENCES `table_users` (`id_user`)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
+/*
 create table ratings_comments(
 id_review int(11) not null auto_increment,
 img blob,
@@ -47,6 +39,7 @@ user_comment varchar(400),
 primary key(id_review),
 FOREIGN KEY (id_user) REFERENCES users (id_user)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
+*/
 
 create table perfil(
 id_perfil int(11)not null auto_increment,
