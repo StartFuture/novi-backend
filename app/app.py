@@ -1,7 +1,7 @@
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes import autentication, users
+from routes import autentication, users, destinations
 
 app = FastAPI()
 
@@ -19,6 +19,7 @@ app.add_middleware(
 
 app.include_router(autentication.router, prefix="/auth", tags=['autenticaçao'])
 app.include_router(users.router, prefix="/user", tags=['usuarios'])
+app.include_router(destinations.router, prefix="/destination", tags=['destination'])
 
 # python3 -m uvicorn app:app --reload
 

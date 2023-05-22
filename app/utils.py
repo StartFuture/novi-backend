@@ -45,16 +45,6 @@ def username_processing(name_user: str):
         return name_user, last_name
 
 
-# Colocar date para formato YYYY/MM/DD
-def date_english_mode(date_birth: str):
-    date = date_birth.strip().replace('/', '')
-    date_year = date[4:8]
-    date_month = date[2:4]
-    date_day = date[:2]
-    date_birth = str(date_year + date_month + date_day)
-    return date_birth
-
-
 # Formatar date de dicionário para formato DD/MM/YYYY
 def format_date(date):
     return f"{date.day}/{date.month}/{date.year}"

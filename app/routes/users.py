@@ -25,15 +25,17 @@ def read_data():
 
 
 #Lista usuário por id
-@router.get('/{id_user}')
-async def read_user_data(id_user: int, status_code=status.HTTP_303_SEE_OTHER):
+
+@router.get('/{id_user}', status_code=status.HTTP_302_FOUND)
+async def read_user_data(id_user: int,):
+
     query_user, id_address = await dao.select_user(id_user)
-    id_address = int(id_address['id_address'])
 
     if query_user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f'User not exist')
     
+    id_address = int(id_address['id_address'])
     query_user['date_birth'] = utils.format_date(query_user['date_birth'])
     
     query_address = await dao.select_address(id_address)
@@ -42,7 +44,7 @@ async def read_user_data(id_user: int, status_code=status.HTTP_303_SEE_OTHER):
 
 
 #Criação de Usuário
-@router.post('/user', status_code=status.HTTP_201_CREATED)
+@router.post('/create_user', status_code=status.HTTP_201_CREATED)
 async def write_data(address: Address, user: User):
    
    #Verificação de CEP
@@ -61,7 +63,6 @@ async def write_data(address: Address, user: User):
     address.city, address.address_user, address.complements = await utils.address_data_processing(address.city, address.address_user, address.complements)
     user.name_user, last_name = utils.username_processing(user.name_user)
     user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
-    user.date_birth = utils.date_english_mode(user.date_birth)
     cpf_verify, email_verify = await dao.verify_data_overwrite(user.cpf, user.email)
     
     #Verificando Erros
@@ -104,7 +105,7 @@ async def write_data(address: Address, user: User):
 
     return JSONResponse(content={'message': f'User {user.name_user}, created successfully'})
 
-@router.patch('/user/{id_user}', status_code=status.HTTP_200_OK)
+@router.patch('/update_user/{id_user}', status_code=status.HTTP_200_OK)
 async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, news_update: NewsUpdate):
 
     #Verificação de CEP
@@ -140,14 +141,14 @@ async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, ne
     
     #atualizando usuário
     result, message = await dao.update_line_users(
-        id_user = id_user,
+        id_user= id_user,
         name_user= user.name_user,
         last_name= last_name,
         email= user.email,
         cpf= user.cpf,
         cellphone= user.cellphone,
         password_user= user.password_user,
-        user = user
+        user= user
     )
 
     await dao.update_line_users_news(
