@@ -3,8 +3,8 @@ from fastapi.responses import JSONResponse
 import requests
 
 from dao import dao
-from models.user_model import  Address, User, UserUpdate, AddressUpdate, NewsUpdate
-import utils
+from models.user_model import  Address, User, UserUpdate, AddressUpdate, NewsUpdate, user_review
+import utils #import user_data_processing, username_processing, date_english_mode, address_data_processing
 
 router = APIRouter()
 
@@ -62,10 +62,17 @@ async def write_data(address: Address, user: User):
     #Processando dados    
     address.city, address.address_user, address.complements = await utils.address_data_processing(address.city, address.address_user, address.complements)
     user.name_user, last_name = utils.username_processing(user.name_user)
-    user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
-    cpf_verify, email_verify = await dao.verify_data_overwrite(user.cpf, user.email)
+    user.cpf, user.cellphone = utils.user_data_processing(user.cpf, user.cellphone)
+    user.date_birth = utils.date_english_mode(user.date_birth)
+    cpf_verify = await dao.verify_cpf(user.cpf)
+    email_verify = await dao.verify_email(user.email)
+    ddi_verify = utils.consult_ddi(user.cellphone)
+    
     
     #Verificando Erros
+    if not ddi_verify:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                             detail=f'cannot create user. ddi {user.cellphone} is invalid')
     if cpf_verify:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail=f'Cannot create user. CPF {user.cpf} alredy exist')
@@ -170,3 +177,5 @@ async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, ne
 
 
     return JSONResponse(content={'message': f'User {user.name_user}, updated successfully'})
+
+
