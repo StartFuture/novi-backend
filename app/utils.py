@@ -24,12 +24,14 @@ oauth = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 # Processar dados de usuário
-def user_data_processing(cpf: str, cellphone: str):
+async def user_data_processing(cpf: str, cellphone: str, email: str):
     if cpf is not None:
         cpf = cpf.replace('.', '').replace('-', '')
     if cellphone is not None:
-        cellphone = cellphone.replace('-', '').replace('(', '').replace(')', '').replace(' ', '')
-    return cpf, cellphone
+        cellphone = cellphone.replace('-', '').replace('(', '').replace(')', '').replace(' ', '').replace('+', '')
+    if email is not None:
+        email = email.lower().strip()
+    return cpf, cellphone, email
 
 
 # Processar username
@@ -50,24 +52,28 @@ def username_processing(name_user: str):
         return name_user, last_name
 
 
-# Colocar date para formato inglês
-def date_english_mode(date_birth: str):
-    date = date_birth.strip().replace('/', '')
-    date_year = date[4:8]
-    date_month = date[2:4]
-    date_day = date[:2]
-    date_birth = str(date_year + date_month + date_day)
-    return date_birth
+# Formatar date de dicionário para formato DD/MM/YYYY
+def format_date(date):
+    return f"{date.day}/{date.month}/{date.year}"
 
 
 # Processar dado da tabela Address
-def address_data_processing(cep: str, city:str, address_user:str):
-    if cep is not None:
-        cep = cep.replace('-', '')
+async def address_data_processing(city:str, address_user:str, complements:str):
     if city is not None:
         city = city.strip().lower()
     if address_user is not None:
         address_user = address_user.strip().lower()
+    if complements is not None:
+        complements = complements.strip().lower()
+    return city, address_user, complements
+
+
+# Processar dado cep
+def cep_data_processing(cep:str):
+    if cep is not None:
+        cep = cep.replace('-', '')
+    return cep
+
     return cep, city, address_user
 
 # Validação de ddi
