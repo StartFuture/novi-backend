@@ -62,3 +62,25 @@ create table two_auth(
 primary key(id_token),
 FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+create table table_objectives(
+id_objective int(11)not null auto_increment,
+objective varchar(80) not null,
+id_destination int(11) not null,
+primary key(id_objective),
+foreign key(id_destination) references table_destination (id_destination)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+create table user_preferred_activities(
+id_activities int(11) not null auto_increment,
+relax_on_the_beach_or_by_the_pool boolean,
+outdoor_trails_and_walks boolean,
+explore_museums_and_historic_sites boolean,
+practice_extreme_and_adventure_sports boolean,
+try_the_gastronomy_and_go_on_gastronomic_tours boolean,
+id_user int(11) not null,
+primary key(id_activities),
+foreign key(id_user) references table_users(id_user)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;

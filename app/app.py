@@ -1,7 +1,7 @@
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes import autentication, users, reviews, profile, objective
+from routes import autentication, users, reviews, profile, objective, user_activities
 
 app = FastAPI()
 
@@ -22,3 +22,4 @@ app.include_router(users.router, prefix="/user", tags=['usuarios'])
 app.include_router(reviews.router, prefix="/reviews", tags=['avaliações'])
 app.include_router(profile.router, prefix="/profile", tags=['perfil'])
 app.include_router(objective.router, prefix="/objective_tour", tags=['Objetivo da viagem'])
+app.include_router(user_activities.router, prefix="/trip_activities", tags=['Ativdades da viagem'])

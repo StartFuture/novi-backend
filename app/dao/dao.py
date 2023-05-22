@@ -6,6 +6,7 @@ import pydantic
 from parameters import HOST, USER, PASSWORD, DATABASE
 
 from models.user_model import AddressUpdate, UserUpdate, user_review, perfil, objective
+from models.user_model_interview import user_preferred_activities
 
 
 def conect_database(host, user, password, database):
@@ -670,6 +671,123 @@ def read_all_objective():
     )
 
     query = f"""select * from table_objectives;"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+
+
+#Crud atividades de preferencia do ususario
+def insert_activitie(activitie: user_preferred_activities, id_user: int):
+    print(HOST, USER, PASSWORD, DATABASE)
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""insert into user_preferred_activities (relax_on_the_beach_or_by_the_pool, outdoor_trails_and_walks,
+                explore_museums_and_historic_sites, practice_extreme_and_adventure_sports,
+                try_the_gastronomy_and_go_on_gastronomic_tours, id_user) values (
+                {activitie.relax_on_the_beach_or_by_the_pool},{activitie.outdoor_trails_and_walks}, {activitie.explore_museums_and_historic_sites},
+                {activitie.practice_extreme_and_adventure_sports}, {activitie.try_the_gastronomy_and_go_on_gastronomic_tours}, {id_user});"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+    
+
+def update_user_activities(activitie: user_preferred_activities, id_user: int, id_activitie: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""UPDATE user_preferred_activities SET relax_on_the_beach_or_by_the_pool = {activitie.relax_on_the_beach_or_by_the_pool},
+                 outdoor_trails_and_walks = {activitie.outdoor_trails_and_walks}, explore_museums_and_historic_sites = {activitie.explore_museums_and_historic_sites}, 
+                 practice_extreme_and_adventure_sports = {activitie.practice_extreme_and_adventure_sports}, 
+                 try_the_gastronomy_and_go_on_gastronomic_tours = {activitie.try_the_gastronomy_and_go_on_gastronomic_tours} WHERE id_activities= {id_activitie} and id_user = {id_user};"""
+    
+    try:
+        print(action)
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+    
+
+def delete_user_activities(id_user: int, id_activitie: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""delete user_preferred_activities.* from user_preferred_activities where id_activities = {id_activitie} and id_user = {id_user} ;"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+
+
+def read_activitie(id_activitie: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from user_preferred_activities where id_activities = {id_activitie};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+    
+
+def read_all_activities():
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from user_preferred_activities;"""
     
     try:
         cursor.execute(query)
