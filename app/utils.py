@@ -11,18 +11,6 @@ LINK_API = "https://api-paises.pages.dev/paises.json"
 
 oauth = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-
-'''def signJWT(user_id: str, type_jwt: str) -> Dict[str, str]:
-    payload = {
-        "user_id": user_id,
-        "exp": 3,
-        "type": type_jwt
-    }
-    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
-
-    return {'access_token': token}'''
-
-
 # Processar dados de usuário
 async def user_data_processing(cpf: str, cellphone: str, email: str):
     if cpf is not None:
@@ -32,7 +20,6 @@ async def user_data_processing(cpf: str, cellphone: str, email: str):
     if email is not None:
         email = email.lower().strip()
     return cpf, cellphone, email
-
 
 # Processar username
 def username_processing(name_user: str):
