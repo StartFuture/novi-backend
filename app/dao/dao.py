@@ -39,7 +39,7 @@ def verify_user_exist(email: str):
         database=DATABASE
     )
 
-    query = f"""select id_user, password_user from table_users where email = '{email}';"""
+    query = f"""select user, password_user from user where email = '{email}';"""
 
     cursor.execute(query)
 
@@ -51,14 +51,6 @@ def verify_user_exist(email: str):
     else:
         return None
 
-def verify_user_exist_by_id(id_user: int):
-    connection,cursor = conect_database(host=HOST, user=USER, password=PASSWORD, database=DATABASE)
-    query = f"""SELECT id_user FROM table_users WHERE id_user = {id_user}"""
-    cursor.execute(query)
-    result = cursor.fetchone()
-    connection.close()
-
-    return result is not None
 
 def verify_token_exist(id_user: int):
     """Essa função tem como objetivo fazer uma consulta
@@ -169,29 +161,6 @@ def insert_new_code(id_user: int, user_code: int,):
     connection.close()
 
 
-def delete_user_by_id(id_user: int):
-    connection, cursor = conect_database(
-        host=HOST,
-        user=USER,
-        password=PASSWORD,
-        database=DATABASE
-    )
-
-    action = f"""delete table_users.* from table_users where id_user = "{id_user}";"""
-
-    cursor.execute(action)
-    connection.commit()
-
-    query = f"""select id_user from table_users where id_user = "{id_user}";"""
-
-    cursor.execute(query)
-    result = cursor.fetchone()
-    connection.commit()
-    connection.close()
-
-    return not bool(result)
-
-
 def insert_new_user_comment(user_name: str, perfil: str, stars: int, user_comment: str):
     connection, cursor = conect_database(
         host=HOST,
@@ -215,22 +184,3 @@ def insert_new_user_comment(user_name: str, perfil: str, stars: int, user_commen
     connection.close()
 
     return bool(result)
-
-
-def select_all():
-    connection,cursor = conect_database(
-        host=HOST, 
-        user=USER, 
-        password=PASSWORD, 
-        database=DATABASE
-    )
-    
-    query = "SELECT * FROM table_users tu;"
-
-    cursor.execute(query)
-    user_list = cursor.fetchall()
-    connection.close()
-
-    return user_list
-
-  

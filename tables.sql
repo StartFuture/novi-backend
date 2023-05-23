@@ -23,7 +23,7 @@ create table user (
     password_user varchar(255) NOT NULL,
     news boolean,
     info_conditions boolean,
-    share_data boolean
+    share_data boolean,
     PRIMARY KEY (id),
     FOREIGN KEY (id_address) REFERENCES `address`(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
