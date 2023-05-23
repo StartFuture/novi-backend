@@ -112,7 +112,7 @@ create table travel (
     quantity_people INT(2) NOT NULL,
     price DOUBLE PRECISION(10,2) NOT NULL,
     PRIMARY KEY(id),
-    FOREIGN KEY(id_user) REFERENCES user(id)
+    FOREIGN KEY(id_user) REFERENCES user(id),
     FOREIGN KEY(id_accommodation) REFERENCES accommodation(id),
     FOREIGN KEY(id_transport_from) REFERENCES transport(id),
     FOREIGN KEY(id_transport_return) REFERENCES transport(id)
