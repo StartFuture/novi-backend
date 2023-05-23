@@ -115,7 +115,7 @@ create table travel (
     FOREIGN KEY(id_user) REFERENCES user(id)
     FOREIGN KEY(id_accommodation) REFERENCES accommodation(id),
     FOREIGN KEY(id_transport_from) REFERENCES transport(id),
-    FOREIGN KEY(id_transport_return) REFERENCES transport(id),
+    FOREIGN KEY(id_transport_return) REFERENCES transport(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 create table traveltour(
@@ -123,6 +123,6 @@ create table traveltour(
     id_travel BIGINT,
     id_tour BIGINT,
     PRIMARY KEY(id),
-    FOREIGN KEY(id_trave) REFERENCES travel(id),
+    FOREIGN KEY(id_travel) REFERENCES travel(id),
     FOREIGN KEY(id_tour) REFERENCES tour(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
