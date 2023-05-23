@@ -1,31 +1,31 @@
 use novi;
 
-create table address (
-    id_address int(11) not null AUTO_INCREMENT,
-    cep varchar(8),
-    state_user varchar(2),
-    city varchar(30),
-    address_user varchar(255),
-    address_number varchar(5),
+create table `address` (
+    id BIGINT not null AUTO_INCREMENT,
+    cep varchar(8) NOT NULL,
+    state_user varchar(2) NOT NULL,
+    city varchar(255) NOT NULL,
+    address_user varchar(255) NOT NULL,
+    address_number varchar(5) NOT NULL,
     complements varchar(255),
-    PRIMARY KEY (id_address)    
+    PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 create table user (
-    id_user int(11) not null AUTO_INCREMENT,
-    id_address varchar(255),
-    name_user varchar(255),
-    last_name varchar(255),
-    date_birth date,
-    email varchar(30),
-    cpf varchar(11),
-    cellphone varchar(30),
-    password_user varchar(255),
+    id BIGINT not null AUTO_INCREMENT,
+    id_address BIGINT,
+    name_user varchar(255) NOT NULL,
+    last_name varchar(255) NOT NULL,
+    date_birth date NOT NULL,
+    email varchar(30) NOT NULL UNIQUE,
+    cpf varchar(11) NOT NULL UNIQUE,
+    cellphone varchar(30) NOT NULL,
+    password_user varchar(255) NOT NULL,
     news boolean,
     info_conditions boolean,
     share_data boolean
-    PRIMARY KEY (id_user),
-    FOREIGN KEY(id_address) REFERENCES address (id_address)
+    PRIMARY KEY (id),
+    FOREIGN KEY (id_address) REFERENCES `address`(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*
@@ -43,11 +43,11 @@ FOREIGN KEY (id_user) REFERENCES users (id_user)
 */
 
 create table perfil(
-id_perfil int(11)not null auto_increment,
+id_perfil int(11) not null auto_increment,
 perfil_user varchar(20) not null,
 id_user int(11) not null,
 primary key(id_perfil),
-foreign key(id_user) references users (id_user)
+foreign key(id_user) references user (id_user)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 create table table_destinations (
