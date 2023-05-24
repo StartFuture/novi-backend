@@ -3,7 +3,7 @@ import mysql.connector
 
 from parameters import HOST, USER, PASSWORD, DATABASE
 
-from models.models_travel_activities import travel_activities
+from models.models_travel_quiz import travel_activities, travel_options, travel_cultures, weather_option
 
 
 def conect_database(host, user, password, database):
@@ -25,7 +25,7 @@ def conect_database(host, user, password, database):
 
 
 
-#Crud atividades de preferencia do ususario
+#inserindo atividades de preferencia do ususario
 def insert_travel_activitie(activitie: travel_activities, id_user: int):
     print(HOST, USER, PASSWORD, DATABASE)
     connection, cursor = conect_database(
@@ -50,7 +50,8 @@ def insert_travel_activitie(activitie: travel_activities, id_user: int):
         return True
     
 
-def update_tarvel_activities(activitie: travel_activities, id_user: int, id_activitie: int):
+def insert_travel_options(option: travel_options, id_user: int):
+    print(HOST, USER, PASSWORD, DATABASE)
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -58,31 +59,9 @@ def update_tarvel_activities(activitie: travel_activities, id_user: int, id_acti
         database=DATABASE
     )
 
-    action = f"""UPDATE travel_activities SET water_preference = {activitie.water_preference}, walk_preference = {activitie.walk_preference},
-             historic_preference = {activitie.historic_preference}, sport_preference = {activitie.sport_preference}, food_preference = {activitie.food_preference} 
-             WHERE id_activities= {id_activitie} and id_user = {id_user};"""
-    
-    try:
-        print(action)
-        cursor.execute(action)
-    except Exception:
-        connection.close()
-        return False
-    else:
-        connection.commit()
-        connection.close()
-        return True
-    
-
-def delete_travel_activities(id_user: int, id_activitie: int):
-    connection, cursor = conect_database(
-        host=HOST,
-        user=USER,
-        password=PASSWORD,
-        database=DATABASE
-    )
-
-    action = f"""delete travel_activities.* from travel_activities where id_activities = {id_activitie} and id_user = {id_user} ;"""
+    action = f"""insert into travel_options(travel_destination, travel_style, accommodation_style, night_style, can_leave_country, transport_style, id_user)
+                values ({option.travel_destination}, {option.travel_style}, {option.acommodation_style},
+                  {option.night_style}, {option.can_leave_country}, {option.transport_style}, {id_user});"""
     
     try:
         cursor.execute(action)
@@ -93,9 +72,10 @@ def delete_travel_activities(id_user: int, id_activitie: int):
         connection.commit()
         connection.close()
         return True
+    
 
-
-def read_travel_activitie(id_activitie: int):
+def insert_travel_cultures(culture: travel_cultures, id_user: int):
+    print(HOST, USER, PASSWORD, DATABASE)
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -103,21 +83,23 @@ def read_travel_activitie(id_activitie: int):
         database=DATABASE
     )
 
-    query = f"""select * from travel_activities where id_activities = {id_activitie};"""
+    action = f"""insert into travel_cultures(music_preference, building_preference, tradicion_preference, party_preference, no_preference, id_user)
+                values ({culture.music_preference}, {culture.building_preference}, {culture.tradicion_preference},
+                  {culture.party_preference}, {culture.no_preference}, {id_user});"""
     
     try:
-        cursor.execute(query)
-        result = cursor.fetchall()
+        cursor.execute(action)
     except Exception:
         connection.close()
         return False
     else:
         connection.commit()
         connection.close()
-        return result
+        return True
     
 
-def read_all_travel_activities():
+def insert_weather_option(weather: weather_option, id_user: int):
+    print(HOST, USER, PASSWORD, DATABASE)
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -125,15 +107,16 @@ def read_all_travel_activities():
         database=DATABASE
     )
 
-    query = f"""select * from travel_activities;"""
+    action = f"""insert into weather_option(warm, mild, cold, no_preference, id_user)
+                values ({weather.warm}, {weather.mild}, {weather.cold}, {weather.no_preference}, {id_user});"""
     
     try:
-        cursor.execute(query)
-        result = cursor.fetchall()
+        cursor.execute(action)
     except Exception:
         connection.close()
         return False
     else:
         connection.commit()
         connection.close()
-        return result
+        return True
+
