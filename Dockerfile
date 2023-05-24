@@ -1,8 +1,8 @@
 FROM python:3.10-alpine
 
-WORKDIR /api_teste
+WORKDIR /novi
 
-COPY . /api_teste
+COPY . /novi
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
