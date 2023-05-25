@@ -88,14 +88,53 @@ foreign key(id_destination) references table_destination (id_destination)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-create table user_preferred_activities(
+create table travel_options(
+id_options int(11) not null auto_increment,
+travel_destination int(1) not null,
+travel_style int(1) not null,
+accommodation_style int(1) not null,
+night_style int(1) not null,
+can_leave_country boolean not null,
+transport_style int(1) not null,
+id_user int(11) not null,
+primary key(id_options),
+foreign key(id_user) references table_users(id_user)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+create table travel_activities(
 id_activities int(11) not null auto_increment,
-relax_on_the_beach_or_by_the_pool boolean,
-outdoor_trails_and_walks boolean,
-explore_museums_and_historic_sites boolean,
-practice_extreme_and_adventure_sports boolean,
-try_the_gastronomy_and_go_on_gastronomic_tours boolean,
+water_preference int(1) not null,
+walk_preference int(1) not null,
+historic_preference int(1) not null,
+sport_preference int(1) not null,
+food_preference int(1) not null,
 id_user int(11) not null,
 primary key(id_activities),
+foreign key(id_user) references table_users(id_user)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+create table travel_cultures(
+id_cultures int(11) not null auto_increment,
+music_preference int(1) not null,
+building_preference int(1) not null,
+tradicion_preference int(1) not null,
+party_preference int(1) not null,
+no_preference boolean not null,
+id_user int(11) not null,
+primary key(id_cultures),
+foreign key(id_user) references table_users(id_user)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+create table weather_option(
+id_weather_option int(11) not null auto_increment,
+warm int(1) not null,
+mild int(1) not null,
+cold int(1) not null,
+no_preference boolean not null,
+id_user int(11) not null,
+primary key(id_weather_option),
 foreign key(id_user) references table_users(id_user)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
