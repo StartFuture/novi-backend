@@ -7,3 +7,6 @@ class UserModel(BaseModel):
     password_user: str
 
 
+class token(BaseModel):
+    token: str
+
