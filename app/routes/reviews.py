@@ -19,7 +19,6 @@ def review(user: user_review, id_user: dict):
 @router.get('/read_reviews', status_code=status.HTTP_200_OK)
 def read_review(id_user: int):
     result = dao.read_review(id_user=id_user)
-    print(result)
     if not result:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  detail='No comments were found.')
     return JSONResponse(content=result, status_code=status.HTTP_200_OK) 
@@ -28,7 +27,6 @@ def read_review(id_user: int):
 @router.get('/read_all_reviews', status_code=status.HTTP_200_OK)
 def read_review():
     result = dao.read_all_review()
-    print(result)
     if not result:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  detail='No comments were found.')
     return JSONResponse(content=result, status_code=status.HTTP_200_OK) 

@@ -3,7 +3,8 @@ from fastapi.responses import JSONResponse
 import requests
 
 from dao import dao
-from models.user_model import  Address, User, UserUpdate, AddressUpdate, NewsUpdate, user_review
+from models.user_model import  Address, UserUpdate, AddressUpdate, NewsUpdate, User
+
 import utils #import user_data_processing, username_processing, date_english_mode, address_data_processing
 
 router = APIRouter()

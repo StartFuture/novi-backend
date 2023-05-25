@@ -1,7 +1,7 @@
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes import autentication, users, destinations, reviews, profile, objective, travel_quiz
+from routes import autentication, users, destinations, reviews, profile, objective, travel_quiz, password_edit
 
 app = FastAPI()
 
@@ -24,6 +24,7 @@ app.include_router(profile.router, prefix="/profile", tags=['perfil'])
 app.include_router(objective.router, prefix="/objective_tour", tags=['Objetivo da viagem'])
 app.include_router(travel_quiz.router, prefix="/travel_quiz", tags=['questionario para a viagem'])
 app.include_router(destinations.router, prefix="/destination", tags=['destination'])
+app.include_router(password_edit.router, prefix="/password", tags=['Edição de senha'])
 
 # python3 -m uvicorn app:app --reload
 
