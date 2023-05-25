@@ -1,20 +1,15 @@
 from datetime import timedelta, datetime
 from typing import Dict
-
-from jose import jwt
+import requests
+from jose import jwt, JWTError
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, status, HTTPException
 
 from parameters import JWT_SECRET, JWT_ALGORITHM
+LINK_API = "https://api-paises.pages.dev/paises.json"
 
-def signJWT(user_id: str, type_jwt: str) -> Dict[str, str]:
-    payload = {
-        "user_id": user_id,
-        "exp": 3,
-        "type": type_jwt
-    }
-    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
-    return {'access_token': token}
-
+oauth = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 # Processar dados de usuário
 async def user_data_processing(cpf: str, cellphone: str, email: str):
@@ -25,7 +20,6 @@ async def user_data_processing(cpf: str, cellphone: str, email: str):
     if email is not None:
         email = email.lower().strip()
     return cpf, cellphone, email
-
 
 # Processar username
 def username_processing(name_user: str):
@@ -66,3 +60,43 @@ def cep_data_processing(cep:str):
     if cep is not None:
         cep = cep.replace('-', '')
     return cep
+
+    return cep, city, address_user
+
+# Validação de ddi
+def consult_ddi(cellphone: str):    
+    ddi = cellphone.replace('+', '')[:2]
+    list_ddi = []
+    response = requests.get(LINK_API)
+    for value in response.json().values():
+        list_ddi.append(value['ddi'])
+    if ddi in list_ddi:
+        return True
+    else: 
+        return False
+    
+
+def decrypt_token(token: str) -> dict[str]:
+    result = jwt.decode(token=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
+    
+    return result
+
+
+def signJWT(user_id: str) -> dict[str]:
+    payload = {
+        "sub": user_id,
+        "exp": datetime.utcnow() + timedelta(minutes=30),
+    }
+    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    
+    return {'access_token': token}
+
+
+def verify_token(token: str = Depends(oauth)): # transformar em decorator
+
+    try:
+        payload = jwt.decode(token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
+        return payload
+    except JWTError:
+        raise HTTPException(detail={'msg': 'missing token'}, 
+                             status_code=status.HTTP_401_UNAUTHORIZED)
