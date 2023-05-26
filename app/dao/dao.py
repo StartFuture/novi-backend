@@ -4,7 +4,9 @@ import mysql.connector
 import pydantic
 
 from parameters import HOST, USER, PASSWORD, DATABASE
-from models.user_model import  AddressUpdate, UserUpdate
+
+from models.user_model import AddressUpdate, UserUpdate, user_review, perfil, objective
+
 
 def conect_database(host, user, password, database):
 
@@ -23,7 +25,7 @@ def conect_database(host, user, password, database):
     return connetion, cursor
 
 
-def verify_user_exist(email: str):
+def verify_user_exist_by_email(email: str):
 
     """Essa função tem como objetivo fazer uma consulta
     na tabela table_users para saber se existe um usuario com
@@ -52,7 +54,7 @@ def verify_user_exist(email: str):
         return None
 
 
-def verify_token_exist(id_user: int):
+def verify_token_exist_by_id(id_user: int):
     """Essa função tem como objetivo fazer uma consulta
     na tabela two_auth para saber se existe a um token
     correspondente a chave estrangeira id_user.
@@ -184,3 +186,353 @@ def insert_new_user_comment(user_name: str, perfil: str, stars: int, user_commen
     connection.close()
 
     return bool(result)
+
+  
+def insert_review(user: user_review, id_user: int):
+    print(HOST, USER, PASSWORD, DATABASE)
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""insert into ratings_comments (name_user, perfil, stars, user_comment, id_user) values
+    ('{user.name_user}', '{user.perfil}', '{user.stars}', '{user.comment}', '{id_user}');"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+    
+
+def update_review(id_user: int, user: user_review, id_review: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""UPDATE ratings_comments SET user_comment='{user.comment}', stars={user.stars} WHERE id_user = {id_user} and id_review = {id_review};"""
+    
+    try:
+        print(action)
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+    
+
+def delete_review(id_review: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""delete ratings_comments.* from ratings_comments where id_review={id_review} ;"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+
+
+def read_review(id_user: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from ratings_comments where id_user={id_user};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+    
+
+def read_all_review():
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from ratings_comments;"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+
+
+def insert_profile(user: perfil, id_user: int):
+    print(HOST, USER, PASSWORD, DATABASE)
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""insert into user_profile (profile_user, id_user) values ('{user.user_perfil}', {id_user});"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+
+    
+def read_profile(id_user: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from user_profile where id_user={id_user};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+
+
+def read_all_profile():
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = """select * from  user_profile;"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+
+
+def update_profile(id_user: int, user: perfil, id_profile: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""UPDATE user_profile SET profile_user='{user.user_perfil}' WHERE id_user = {id_user} and id_profile = {id_profile};"""
+    
+    try:
+        print(action)
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+    
+
+def delete_profile(id_user: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""delete user_profile.* from user_profile where id_user={id_user} ;"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+
+
+def verify_user_exist_by_id_join_address(id_user: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from table_users join table_address where table_users.id_user = {id_user};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+
+#Crud objetivo e destino da viagem
+def insert_objective(objective: objective, id_destination: int):
+    print(HOST, USER, PASSWORD, DATABASE)
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""insert into table_objectives (objective, id_destination) value ('{objective.objetive}', {id_destination});"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+    
+
+def update_objective(objective: objective, id_destination: int, id_objective: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""UPDATE table_objectives SET objective='{objective.objetive}' WHERE id_objective = {id_objective} and id_destination = {id_destination};"""
+    
+    try:
+        print(action)
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+    
+
+def delete_objective(id_objective: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    action = f"""delete table_objectives.* from table_objectives where id_objective = {id_objective} ;"""
+    
+    try:
+        cursor.execute(action)
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return True
+
+
+def read_objective(id_objective: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from table_objectives where id_objective= {id_objective};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
+    
+
+def read_all_objective():
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from table_objectives;"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.commit()
+        connection.close()
+        return result
