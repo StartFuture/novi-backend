@@ -31,16 +31,42 @@ async def new_travel(id_user: int, id_accommodation: int, id_transport_from: int
 
     create_travel = f"""
     INSERT INTO travel
-    (id_user, id_accommodation, id_transport_from, id_transport_return, date_from, date_return, quantity_people, price)
+    (id, id_user, id_accommodation, id_transport_from, id_transport_return, date_from, date_return, quantity_people, price)
     VALUES
-    ({id_user}, {id_accommodation}, {id_transport_from}, {id_transport_return}, '{date_from}', '{date_return}', {quantity_people}, {price})
+    (default, {id_user}, {id_accommodation}, {id_transport_from}, {id_transport_return}, '{date_from}', '{date_return}', {quantity_people}, {price})
     """
 
     cursor.execute(create_travel)
     connection.commit()
 
-    query = f"SELECT "
+    query = f"SELECT LAST_INSERT_ID() FROM travel;"
+
+    cursor.execute(query)
+    id_travel = cursor.fetchone()
+
 
     connection.close()
 
-    return {'message': 'Travel Created Succesfully'}
+    return id_travel, {'message': 'Travel Created Succesfully'}
+
+async def new_tour(id_travel: int, id_tour: int):
+    connection, cursor = connect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    create_travel_tour = f"""
+    INSERT INTO traveltour
+    (id, id_travel, id_tour)
+    VALUES
+    (default, {id_travel}, {id_tour})
+    """
+
+    cursor.execute(create_travel_tour)
+    connection.commit()
+
+    connection.close()
+
+    return {'message': 'Succesfully'}
