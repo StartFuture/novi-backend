@@ -63,7 +63,7 @@ create table table_destinations (
 create table transport (
     id BIGINT NOT NULL AUTO_INCREMENT,
     details VARCHAR(255) NOT NULL,
-    price DOUBLE PRECISION(10,2) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
     transport_style INT(1) NOT NULL,
     PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -77,7 +77,7 @@ create table accommodation (
     warm int(1) NOT NULL,
     mild INT(1) NOT NULL,
     cold INT(1) NOT NULL,
-    price DOUBLE PRECISION(10,2) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
     details VARCHAR(255) NOT NULL,
     PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -95,7 +95,7 @@ create table tour (
     sport_preference INT(1) NOT NULL,
     food_preference INT(1) NOT NULL,
     id_accommodation BIGINT NOT NULL,
-    price DOUBLE PRECISION(10,2) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
     details VARCHAR(255) NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(id_accommodation) REFERENCES accommodation(id)
@@ -110,7 +110,7 @@ create table travel (
     date_from DATE NOT NULL,
     date_return DATE,
     quantity_people INT(2) NOT NULL,
-    price DOUBLE PRECISION(10,2) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(id_user) REFERENCES user(id)
     FOREIGN KEY(id_accommodation) REFERENCES accommodation(id),
