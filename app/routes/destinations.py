@@ -66,9 +66,7 @@ async def update_data(id_destination: int, destination: UpdateDestination):
 
 
 
-#####################################
-########        DELETE      #########
-#####################################
+# Delete da linha de destino
 @router.delete('/delete_destination', status_code=status.HTTP_200_OK)
 async def delete_data(id_destination: int):
 
