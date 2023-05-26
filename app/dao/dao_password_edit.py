@@ -23,27 +23,22 @@ def conect_database(host, user, password, database):
     return connetion, cursor
 
 
-def verify_user_password(id_user: int, current_password: str):
+def verify_user_password(id_user: int):
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
         password=PASSWORD,
         database=DATABASE
     )
-    query = f"""select password_user from table_users where id_user = {id_user} and password_user = '{current_password}';"""
+    query = f"""select password_user from table_users where id_user = {id_user};"""
     
     try:
         cursor.execute(query)
         result = cursor.fetchone()
-        if result['password_user'] == current_password:
-            result = True
-        else:
-            result = False
     except Exception:
         connection.close()
-        return False
+        return None
     else:
-        connection.commit()
         connection.close()
         return result
 
