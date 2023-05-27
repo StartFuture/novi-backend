@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.security import  OAuth2PasswordBearer
 
-from dao import dao
+from dao import dao, dao_users
 import utils
 from models import models_auth
 
@@ -16,7 +16,7 @@ oauth = OAuth2PasswordBearer(tokenUrl="login")
 
 @router.post("/login", status_code=status.HTTP_200_OK)
 def auth(user: models_auth.UserModel) -> dict:
-    query_result = dao.verify_user_exist(user.email)# Verificação de existencia de usuario
+    query_result = dao_users.verify_user_exist(user.email)# Verificação de existencia de usuario
     if query_result:# Se usuario existe:
 
         if user.password_user == query_result['password_user']:# Validçãp de senha do usuario
@@ -32,15 +32,15 @@ def auth(user: models_auth.UserModel) -> dict:
 
                     else:#Se data de expiração é maior que 3 entao token e invalido:
                         dao.insert_revoked_token(id_token=token_result['id_token'], id_user=token_result['id_user'])#colocando token na tabela revoked_token
-                        token = utils.signJWT(user_id=query_result['id_user'], type_jwt='JWT')#criar novo token
+                        token = utils.signJWT(user_id=query_result['id_user'])#criar novo token
                         dao.update_token(token_result['id_user'])#Atualizando data de expiração do token no banco
                         return token# retorna novo token para o front
                 else:#se token esta revogado:
-                    token = utils.signJWT(query_result['id_user'], type_jwt='JWT')#criar novo token
+                    token = utils.signJWT(query_result['id_user'])#criar novo token
                     dao.update_token(token_result['id_user'])#Atualizando data de expiração do token no banco
                     raise token# retorna novo token para o front 
             else:#Se token não existe:
-                token = utils.signJWT(query_result['id_user'], type_jwt='JWT')#criar novo token
+                token = utils.signJWT(query_result['id_user'])#criar novo token
                 dao.insert_new_token_and_code(query_result['id_user'])# inserindo token no banco
                 return token#retorna token para o front   
         else:#Se senha esta incorreta:

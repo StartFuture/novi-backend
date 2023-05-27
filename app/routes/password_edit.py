@@ -26,4 +26,3 @@ def password_edit(id_user: dict, current_password: dict, new_password: dict):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='mismatched password.')
     else:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail='Password user not found.')
-
