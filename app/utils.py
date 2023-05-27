@@ -4,6 +4,7 @@ import requests
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, status, HTTPException
+import logging
 
 from parameters import JWT_SECRET, JWT_ALGORITHM
 LINK_API = "https://api-paises.pages.dev/paises.json"
@@ -77,13 +78,18 @@ def consult_ddi(cellphone: str):
     
 
 def decrypt_token(token: str) -> dict[str]:
-    result = jwt.decode(token=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
-    
+    print("token = " + token)
+    print("algorithms = " + JWT_ALGORITHM)
+    print("secret = " + JWT_SECRET)
+    result = jwt.decode(access_token=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
+    print(result)
+
     return result
 
 
 def get_user_id(token: str) -> int:
     user = decrypt_token(token=token)
+    logging.warning(user)
     if not "sub" in user:
         raise ValueError('Token incorrect')
 

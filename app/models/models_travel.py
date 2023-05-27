@@ -11,3 +11,4 @@ class Travel(BaseModel):
     date_return: Optional[str] = Field(None)
     quantity_people: int
     price: float
+    id_tour: int
