@@ -21,7 +21,7 @@ def connect_database(host, user, password, database):
 
     return connetion, cursor
 
-async def new_travel(id_user: int, id_accommodation: int, id_transport_from: int , id_transport_return: int, date_from: str, date_return: str, quantity_people: int, price: float):
+def new_travel(id_user: int, id_accommodation: int, id_transport_from: int , id_transport_return: int, date_from: str, date_return: str, quantity_people: int, price: float):
     connection, cursor = connect_database(
         host=HOST, 
         user=USER, 
@@ -43,13 +43,11 @@ async def new_travel(id_user: int, id_accommodation: int, id_transport_from: int
 
     cursor.execute(query)
     id_travel = cursor.fetchone()
-
-
     connection.close()
 
     return id_travel, {'message': 'Travel Created Succesfully'}
 
-async def new_travel_tour(id_travel: int, id_tour: int):
+def new_travel_tour(id_travel: int, id_tour: int):
     connection, cursor = connect_database(
         host=HOST,
         user=USER,
@@ -66,5 +64,29 @@ async def new_travel_tour(id_travel: int, id_tour: int):
 
     cursor.execute(create_travel_tour)
     connection.commit()
+    connection.close()
 
     return {'message': 'TravelTour Created Succesfully'}
+
+
+def select_history(id_user: int):
+    connection, cursor = connect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""
+    SELECT t.date_from, t.quantity_people, a.travel_destination FROM travel t
+    LEFT JOIN accommodation a on a.id = t.id_accommodation 
+    WHERE id_user = 2
+    ORDER BY date_from
+    LIMIT 3;
+    """
+
+    cursor.execute(query)
+    query_travel = cursor.fetchall()
+    connection.close()
+
+    return query_travel

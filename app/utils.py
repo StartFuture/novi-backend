@@ -42,7 +42,7 @@ def username_processing(name_user: str):
 
 # Formatar date de dicionário para formato DD/MM/YYYY
 def format_date(date):
-    return f"{date.day}/{date.month}/{date.year}"
+    return f"{date.year}-{date.month}-{date.day}"
 
 
 # Processar dado da tabela Address
