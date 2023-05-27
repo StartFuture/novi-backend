@@ -82,6 +82,14 @@ def decrypt_token(token: str) -> dict[str]:
     return result
 
 
+def get_user_id(token: str) -> int:
+    user = decrypt_token(token=token)
+    if not "sub" in user:
+        raise ValueError('Token incorrect')
+
+    return int(user['sub'])
+
+
 def signJWT(user_id: str) -> dict[str]:
     payload = {
         "sub": user_id,
