@@ -26,12 +26,3 @@ async def write_data(id_user: int, id_accommodation: int, id_transport_from: int
     )
 
     return JSONResponse(content=messages['message'])
-
-# @router.post('/travel_tours', status_code=status.HTTP_201_CREATED)
-# async def create_tuor(id_travel: int, id_tour: int):
-#     messages = await dao_tour.new_tour(
-#         id_travel= id_travel,
-#         id_tour= id_tour
-#     )
-
-#     return JSONResponse(content=messages['Travel tour create successfully'])
