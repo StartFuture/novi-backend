@@ -49,7 +49,7 @@ async def new_travel(id_user: int, id_accommodation: int, id_transport_from: int
 
     return id_travel, {'message': 'Travel Created Succesfully'}
 
-async def new_tour(id_travel: int, id_tour: int):
+async def new_travel_tour(id_travel: int, id_tour: int):
     connection, cursor = connect_database(
         host=HOST,
         user=USER,
@@ -67,6 +67,4 @@ async def new_tour(id_travel: int, id_tour: int):
     cursor.execute(create_travel_tour)
     connection.commit()
 
-    connection.close()
-
-    return {'message': 'Succesfully'}
+    return {'message': 'TravelTour Created Succesfully'}

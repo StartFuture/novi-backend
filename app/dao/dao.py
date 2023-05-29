@@ -5,7 +5,7 @@ import pydantic
 
 from parameters import HOST, USER, PASSWORD, DATABASE
 
-from models.user_model import AddressUpdate, UserUpdate, user_review, perfil, objective
+from models.user_model import AddressUpdate, UserUpdate, user_review, perfil, objective, User
 
 
 def conect_database(host, user, password, database):
@@ -189,7 +189,6 @@ def insert_new_user_comment(user_name: str, perfil: str, stars: int, user_commen
 
   
 def insert_review(user: user_review, id_user: int):
-    print(HOST, USER, PASSWORD, DATABASE)
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -222,7 +221,6 @@ def update_review(id_user: int, user: user_review, id_review: int):
     action = f"""UPDATE ratings_comments SET user_comment='{user.comment}', stars={user.stars} WHERE id_user = {id_user} and id_review = {id_review};"""
     
     try:
-        print(action)
         cursor.execute(action)
     except Exception:
         connection.close()
@@ -299,7 +297,6 @@ def read_all_review():
 
 
 def insert_profile(user: perfil, id_user: int):
-    print(HOST, USER, PASSWORD, DATABASE)
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -375,7 +372,6 @@ def update_profile(id_user: int, user: perfil, id_profile: int):
     action = f"""UPDATE user_profile SET profile_user='{user.user_perfil}' WHERE id_user = {id_user} and id_profile = {id_profile};"""
     
     try:
-        print(action)
         cursor.execute(action)
     except Exception:
         connection.close()
@@ -430,7 +426,6 @@ def verify_user_exist_by_id_join_address(id_user: int):
 
 #Crud objetivo e destino da viagem
 def insert_objective(objective: objective, id_destination: int):
-    print(HOST, USER, PASSWORD, DATABASE)
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -462,7 +457,6 @@ def update_objective(objective: objective, id_destination: int, id_objective: in
     action = f"""UPDATE table_objectives SET objective='{objective.objetive}' WHERE id_objective = {id_objective} and id_destination = {id_destination};"""
     
     try:
-        print(action)
         cursor.execute(action)
     except Exception:
         connection.close()
