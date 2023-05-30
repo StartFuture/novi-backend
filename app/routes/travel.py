@@ -32,9 +32,8 @@ def write_data(token: str, travel: Travel):
         id_tour= travel.id_tour
     )
 
-<<<<<<< HEAD
+
     return JSONResponse(content=messages['message'])
-=======
     return JSONResponse(content=messages['message'])
 
 @router.get("/history/{id_user}", status_code=status.HTTP_200_OK)
@@ -49,4 +48,10 @@ def get_history(id_user: int):
 
     data ={'travel': new_query_travel}
     return JSONResponse(content=data)
->>>>>>> 56a40b8ecd4bdc9f002d5107bec4fb5c4718b178
+
+@router.get("/next_travel/{id_user}", status_code=status.HTTP_200_OK)
+def get_next_travel(id_user: int):
+
+    query_travel = dao_travel.next_travel(id_user)
+
+    

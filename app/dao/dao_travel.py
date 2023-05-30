@@ -92,7 +92,7 @@ def select_history(id_user: int):
     return query_travel
 
 def next_travel(id_user: int):
-    connection, cursor - connect_database(
+    connection, cursor = connect_database(
         host=HOST,
         user=USER,
         password=PASSWORD,
@@ -100,8 +100,10 @@ def next_travel(id_user: int):
     )
 
     query = f"""
-    SELECT date_from FROM travel t
-    WHERE date_from > CURDATE()
+    SELECT date_from FROM travel
+    WHERE date_from > CURDATE() AND id_user = {id_user}
+    ORDER BY date_from 
+    LIMIT 1;
     """
 
     cursor.execute(query)
