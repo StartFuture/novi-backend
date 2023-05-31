@@ -30,16 +30,103 @@ def get_user_questions(id_user: int):
         database=DATABASE
     )
 
-    query = f"""select * from table_users as tu
-            left join weather_option as wo on tu.id_user = wo.id_user
-            left join travel_activities as ta on tu.id_user = ta.id_user
-            left join travel_options as t_o on tu.id_user = t_o.id_user
-            left join travel_cultures as tc on tu.id_user = tc.id_user
-            where tu.id_user = {id_user};"""
+    query = f"""select * from `user` as u
+                left join weather_option as wo on u.id = wo.id_user
+                left join travel_activities as ta on u.id = ta.id_user
+                left join travel_options as t_o on u.id = t_o.id_user
+                left join travel_cultures as tc on u.id = tc.id_user
+                where u.id = {id_user};"""
     
     try:
         cursor.execute(query)
         result = cursor.fetchone()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.close()
+        return result
+    
+
+def get_travels():
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from accommodation;"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.close()
+        return result
+    
+
+def get_tour_travel(id_accommodation: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from tour where id_accommodation = {id_accommodation};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.close()
+        return result
+    
+
+def get_transport_travel(id_accommodation: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from transport where id_accommodation = {id_accommodation};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.close()
+        return result
+    
+
+def get_travel_data(transport_style: int):
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from `tour` as t
+            left join accommodation as ac on t.id_accommodation = ac.id
+            left join transport as tr on t.id_accommodation = tr.id_accommodation
+            where tr.transport_style = {transport_style};"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
     except Exception:
         connection.close()
         return False

@@ -23,7 +23,7 @@ def auth(user: models_auth.UserModel) -> dict:
             token_result = False #dao.verify_token_exist(query_result['id_user'])# Verificação de existencia de token
 
             if token_result:#Se token existe:
-                is_revoked = dao.verify_token_is_revoked(id_token=token_result['id_token'])# Verificação se token esta revogado
+                is_revoked = False#dao.verify_token_is_revoked(id_token=token_result['id_token'])# Verificação se token esta revogado
                 if not is_revoked:#Se token não esta revogado:
                     date_now = datetime.now().date()# Data do dia atual.
 
@@ -31,9 +31,9 @@ def auth(user: models_auth.UserModel) -> dict:
                         return {'message': 'Token is valid'}
 
                     else:#Se data de expiração é maior que 3 entao token e invalido:
-                        dao.insert_revoked_token(id_token=token_result['id_token'], id_user=token_result['id_user'])#colocando token na tabela revoked_token
+                        #dao.insert_revoked_token(id_token=token_result['id_token'], id_user=token_result['id_user'])#colocando token na tabela revoked_token
                         token = utils.signJWT(user_id=query_result['id_user'])#criar novo token
-                        dao.update_token(token_result['id_user'])#Atualizando data de expiração do token no banco
+                        #dao.update_token(token_result['id_user'])#Atualizando data de expiração do token no banco
                         return token# retorna novo token para o front
                 else:#se token esta revogado:
                     token = utils.signJWT(query_result['id_user'])#criar novo token
@@ -41,7 +41,7 @@ def auth(user: models_auth.UserModel) -> dict:
                     raise token# retorna novo token para o front 
             else:#Se token não existe:
                 token = utils.signJWT(query_result['id_user'])#criar novo token
-                dao.insert_new_token_and_code(query_result['id_user'])# inserindo token no banco
+                #dao.insert_new_token_and_code(query_result['id_user'])# inserindo token no banco
                 return token#retorna token para o front   
         else:#Se senha esta incorreta:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Wrong input")#Mensagem informando input incorreto
