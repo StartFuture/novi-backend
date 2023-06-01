@@ -1,9 +1,16 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, status
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from routes import autentication, users, destinations, reviews, profile, objective, travel_quiz, password_edit, travel
 
 app = FastAPI()
+
+@app.get("/status", status_code=status.HTTP_200_OK)
+def health_check():
+
+    return JSONResponse(content='Status OK')
+
 
 origins = [
     "http://localhost",
