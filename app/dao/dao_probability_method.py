@@ -90,7 +90,7 @@ def get_tour_travel(id_accommodation: int):
         return result
     
 
-def get_transport_travel(id_accommodation: int):
+def get_transport_and_tours_travel(id_accommodation: int):
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -98,7 +98,9 @@ def get_transport_travel(id_accommodation: int):
         database=DATABASE
     )
 
-    query = f"""select * from transport where id_accommodation = {id_accommodation};"""
+    query = f"""select * from `tour` as t
+                left join transport as tr on t.id_accommodation = tr.id_accommodation
+                where tr.id_accommodation = {id_accommodation};"""
     
     try:
         cursor.execute(query)

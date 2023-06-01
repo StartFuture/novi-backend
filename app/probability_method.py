@@ -1,4 +1,4 @@
-from dao.dao_probability_method import get_transport_travel, get_tour_travel
+from dao.dao_probability_method import get_transport_and_tours_travel, get_tour_travel
 
 
 
@@ -33,15 +33,15 @@ def probability_calculation_travels(travels: dict, user_quiz: dict):
 def probability_calculation_preference_and_transport(id_accommodation: int, user_quiz: dict):
    transport_points = []
    best_tours = []
-   transports = get_transport_travel(id_accommodation=id_accommodation)
+   transports_and_tours = get_transport_and_tours_travel(id_accommodation=id_accommodation)
    tours = get_tour_travel(id_accommodation=id_accommodation)
-   for transport in transports:
+   for transport in transports_and_tours:
       transport_style = abs(transport['transport_style'] - user_quiz['transport_style'])
       transport_points.append({'transport_points': transport_style, 'id_transport': transport['id']})
     
    transport_points = sorted(transport_points, key=lambda x: x['transport_points'])
    
-   for tour in tours: 
+   for tour in transports_and_tours: 
       night_style = abs(tour['night_style'] - user_quiz['night_style'])
       music_preference = abs(tour['music_preference'] - user_quiz['music_preference'])
       building_preference = abs(tour['building_preference'] - user_quiz['building_preference'])
