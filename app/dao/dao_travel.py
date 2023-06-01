@@ -81,7 +81,7 @@ def select_history(id_user: int):
     SELECT DISTINCT t.date_from, t.quantity_people, a.travel_destination, a.local_name
     FROM travel t
     LEFT JOIN accommodation a on a.id = t.id_accommodation 
-    WHERE id_user = {id_user} AND date_from < CURRENT_DATE
+    WHERE id_user = {id_user} AND date_from < CURRENT_DATE AND date_return < CURRENT_DATE
     ORDER BY date_from DESC
     LIMIT 3;
     """
