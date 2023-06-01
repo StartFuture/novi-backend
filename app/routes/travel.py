@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from dao import dao_travel, dao_probability_method
 from models.models_travel import Travel,  TravelCalc
 import probability_method
+from utils import get_user_id
 
 router = APIRouter()
 
@@ -11,7 +12,7 @@ router = APIRouter()
 def write_data(token: str, travel: Travel):
 
     try:
-        id_user = 2 #get_user_id(token)
+        id_user = get_user_id(token)
     except Exception:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail='User not authorized')
