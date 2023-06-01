@@ -133,3 +133,24 @@ def get_travel_data(transport_style: int):
     else:
         connection.close()
         return result
+    
+
+def get_travel_abroad():
+    connection, cursor = conect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""select * from accommodation where is_country = 0;"""
+    
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+    except Exception:
+        connection.close()
+        return False
+    else:
+        connection.close()
+        return result

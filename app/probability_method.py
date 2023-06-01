@@ -24,7 +24,6 @@ def probability_calculation_travels(travels: dict, user_quiz: dict):
                           'id_tour': best_tour['id_tour'], 'transport_points': best_tour['transport_points'], 
                           'id_transport': best_tour['id_transport']})
     
-    print(travel_points)
 
     travel_points = sorted(travel_points, key=lambda x: x['points_travel'])
 

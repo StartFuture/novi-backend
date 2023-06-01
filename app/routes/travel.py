@@ -47,10 +47,13 @@ def get_history(id_user: int):
 
 
 @router.post('/probality_method', status_code=status.HTTP_200_OK)
-def get_probability_method():
-    user_quiz = dao_probability_method.get_user_questions(id_user=1)
-    travel_data = dao_probability_method.get_travels()
-    result = probability_method.probability_calculation_travels(travels=travel_data, user_quiz=user_quiz)
-    #result = probability_method.probability_calculation_preference_and_transport(id_accommodation=2, user_quiz=user_quiz)
+def get_probability_method(id_user: int):
+    user_quiz = dao_probability_method.get_user_questions(id_user=id_user)
+    if user_quiz['can_leave_country'] == 1:
+        travel_abroad = dao_probability_method.get_travel_abroad()
+        result = probability_method.probability_calculation_travels(travels=travel_abroad, user_quiz=user_quiz)
+    else:
+        travel_data = dao_probability_method.get_travels()
+        result = probability_method.probability_calculation_travels(travels=travel_data, user_quiz=user_quiz)
 
-    return result
+    return JSONResponse(result) 
