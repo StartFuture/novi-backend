@@ -8,13 +8,13 @@ import utils
 router = APIRouter()
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def write_data(token: str, travel: Travel):
+def write_data(id_user: int, travel: Travel):
 
-    try:
-        id_user = 2 #utils.get_user_id(token)
-    except Exception:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail='User not authorized')
+    # try:
+    #     id_user = 2 #utils.get_user_id(token)
+    # except Exception:
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+    #                         detail='User not authorized')
 
     id_travel, messages = dao_travel.new_travel(
         id_user= id_user,
@@ -28,7 +28,7 @@ def write_data(token: str, travel: Travel):
     )
 
     dao_travel.new_travel_tour(
-        id_travel= id_travel,
+        id_travel= id_travel['LAST_INSERT_ID()'],
         id_tour= travel.id_tour
     )
 
@@ -38,11 +38,13 @@ def write_data(token: str, travel: Travel):
 def get_history(id_user: int):
     
     query_travel = dao_travel.select_history(id_user)
+    
 
     new_query_travel = []
     for item in query_travel:
         item['date_from'] = utils.format_date(item['date_from'])
+        item['travel_destination'] = utils.format_travel(item['travel_destination'])
         new_query_travel.append(item)
 
-    data ={'travel': new_query_travel}
+    data = {'travel_history': new_query_travel}
     return JSONResponse(content=data)
