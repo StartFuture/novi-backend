@@ -3,18 +3,18 @@ from fastapi.responses import JSONResponse
 
 from dao import dao_travel
 from models.models_travel import Travel
-from utils import get_user_id, signJWT
+from utils import get_user_id
 
 router = APIRouter()
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-async def write_data(token: str, travel: Travel):
+async def write_data(id_user: int, travel: Travel):
 
-    try:
-        id_user = 2 #get_user_id(token)
-    except Exception:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail='User not authorized')
+    # try:
+    #     id_user = 2 #get_user_id(token)
+    # except Exception:
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+    #                         detail='User not authorized')
 
     id_travel, messages = await dao_travel.new_travel(
         id_user= id_user,
