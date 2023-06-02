@@ -98,7 +98,12 @@ def get_transport_and_tours_travel(id_accommodation: int):
         database=DATABASE
     )
 
-    query = f"""select * from `tour` as t
+    query = f"""select t.id as id_tour,
+                                night_style, music_preference, building_preference,
+                                tradicion_preference, party_preference, water_preference, walk_preference,
+                                historic_preference, sport_preference, food_preference,
+                                tr.details as details_transport, tr.id as id_transport, t.id_accommodation, t.details as details_tour,
+                                transport_style, t.price as tour_price, tr.price as transport_price from `tour` as t
                 left join transport as tr on t.id_accommodation = tr.id_accommodation
                 where tr.id_accommodation = {id_accommodation};"""
     
