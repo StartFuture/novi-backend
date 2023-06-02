@@ -20,7 +20,7 @@ def probability_calculation_travels(travels: dict, user_quiz: dict):
       for best_tour in best_tours:
         key = (best_tour['id_tour'], travel['id'])
         if key not in travel_points:
-         total_price = float(travel['price']) + best_tour['transport_price'] + best_tour['tour_price']
+         total_price = float(travel['price']) + best_tour['transport_price'] 
          
 
          travel_points[key] = {'local_name': travel['local_name'],
@@ -34,6 +34,7 @@ def probability_calculation_travels(travels: dict, user_quiz: dict):
     travel_points = list(travel_points.values())
     travel_points = sorted(travel_points, key=lambda x: x['points_travel'])
     travel_points = map_json(travels=travel_points)
+    travel_points = total_price_travel(travels=travel_points)
     
     return travel_points
 
@@ -120,3 +121,15 @@ def map_json(travels: list):
 
 
    return maped_travels
+
+
+def total_price_travel(travels: dict):
+   for travel in travels:
+      price_all_tours = 0
+      tours = travel['tours']
+      for tour in tours:
+         price_all_tours = price_all_tours + tour['price_tour']
+      travel['total_price'] += price_all_tours
+   
+   return travels
+   
