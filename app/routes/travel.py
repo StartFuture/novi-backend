@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from dao import dao_travel
 from models.models_travel import Travel
-import utils 
+import utils
 
 router = APIRouter()
 
