@@ -2,7 +2,7 @@ from fastapi import FastAPI, status, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes import autentication, users, destinations, reviews, profile, objective, travel_quiz, password_edit
+from routes import autentication, users, destinations, reviews, profile, objective, travel_quiz, password_edit, travel
 
 app = FastAPI()
 
@@ -24,14 +24,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(autentication.router, prefix="/auth", tags=['autenticaçao'])
-app.include_router(users.router, prefix="/user", tags=['usuarios'])
-app.include_router(reviews.router, prefix="/reviews", tags=['avaliações'])
-app.include_router(profile.router, prefix="/profile", tags=['perfil'])
+app.include_router(autentication.router, prefix="/auth", tags=['Autenticação'])
+app.include_router(users.router, prefix="/user", tags=['Usuários'])
+app.include_router(reviews.router, prefix="/reviews", tags=['Avaliações'])
+app.include_router(profile.router, prefix="/profile", tags=['Perfil'])
 app.include_router(objective.router, prefix="/objective_tour", tags=['Objetivo da viagem'])
-app.include_router(travel_quiz.router, prefix="/travel_quiz", tags=['questionario para a viagem'])
-app.include_router(destinations.router, prefix="/destination", tags=['destination'])
+app.include_router(travel_quiz.router, prefix="/travel_quiz", tags=['Questionário para a viagem'])
+app.include_router(destinations.router, prefix="/destination", tags=['Destinatination']) # Remover Destination
 app.include_router(password_edit.router, prefix="/password", tags=['Edição de senha'])
+app.include_router(travel.router, prefix="/travel", tags=['Viagens'])
 
 # python3 -m uvicorn app:app --reload
 
