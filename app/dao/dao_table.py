@@ -27,7 +27,7 @@ def table_accommodation(accommodation: Accomodation):
         database=DATABASE
     )
 
-    insert_accommodation = """
+    insert_accommodation = f"""
     INSERT INTO accomodation 
     (id, travel_destination, travel_style, accommodation_style, is_country, warn, mild, cold, price, details, local_name) 
     VALUES
@@ -35,7 +35,7 @@ def table_accommodation(accommodation: Accomodation):
     """
 
 
-def table_transport(transport: Transport):
+def table_tour(tour: Tour):
     connection, cursor = connect_database(
         host=HOST, 
         user=USER, 
@@ -43,11 +43,11 @@ def table_transport(transport: Transport):
         database=DATABASE
     )
 
-    insert_tour = """
+    insert_tour = f"""
     INSERT INTO tour
     (id, night_style, music_preference, building_preference, tradicion_preference, party_preference, water_preference, walk_preference, historic_preference, sport_preference, food_preference, id_accommodation, price, details)
     VALUES
-    (default, {transport.night_style}, {transport.music_preference}, {transport.building_preference}, {transport.tradicion_preference}, {transport.party_preference}, {transport.water_preference}, {transport.historic_preference}, {transport.sport_preference}, {transport.food_preference}, {transport.id_accommodation}, {transport.price}, '{transport.details}')
+    (default, {tour.night_style}, {tour.music_preference}, {tour.building_preference}, {tour.tradicion_preference}, {tour.party_preference}, {tour.water_preference}, {tour.historic_preference}, {tour.sport_preference}, {tour.food_preference}, {tour.id_accommodation}, {tour.price}, '{tour.details}')
     """
 
     
@@ -59,9 +59,9 @@ def table_transport(transport: Transport):
         database=DATABASE
     )
 
-    insert_transport = """
+    insert_transport = f"""
     INSERT INTO transport
     (id, details, price, transport_style)
     VALUES
-    (default, '{tour.details}', {tour.price}, {tour.transport_style})
+    (default, '{transport.details}', {transport.price}, {transport.transport_style})
     """
