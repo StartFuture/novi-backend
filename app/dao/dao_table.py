@@ -46,5 +46,21 @@ def table_transport(id, night_style, music_preference, building_preference, trad
     INSERT (id, night_style, music_preference, building_preference, tradicion_preference, party_preference, water_preference, walk_preference, historic_preference, sport_preference, food_preference, id_accommodation, price, details)
     INTO tour
     VALUES
-    (default, {night_style}, {})
+    (default, {night_style}, {music_preference}, {building_preference}, {tradicion_preference}, {party_preference}, {water_preference}, {historic_preference}, {sport_preference}, {food_preference}, {id_accommodation}, {price}, {details})
+    """
+
+    
+def table_transport(id, details, price, transport_style):
+    connection, cursor = connect_database(
+        host=HOST, 
+        user=USER, 
+        password=PASSWORD, 
+        database=DATABASE
+    )
+
+    insert_transport = """
+    INSERT (id, details, price, transport_style)
+    INTO transport
+    VALUES
+    (default, {details}, {price}, {transport_style})
     """
