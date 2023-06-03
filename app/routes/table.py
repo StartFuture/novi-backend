@@ -13,7 +13,7 @@ def write_table_accommodation(accommodation: Accomodation, transport: Transport,
         accommodation= accommodation
     )
 
-
+    id_accommodation = id_accommodation['LAST_INSERT_ID()']
 
     return JSONResponse(content={"id_accommodation": id_accommodation})
 
@@ -21,8 +21,8 @@ def write_table_accommodation(accommodation: Accomodation, transport: Transport,
 def write_table_transport(id_accommodation: int, transport: Transport):
 
     dao_table.table_transport(
-        transport= transport,
-        id_accommodation= id_accommodation
+        id_accommodation= id_accommodation,      
+        transport= transport
     )
     
     return JSONResponse(content={"message": "Table transport created"})
@@ -31,8 +31,8 @@ def write_table_transport(id_accommodation: int, transport: Transport):
 def write_table_tour(id_accommodation: int, tour: Tour):
 
     dao_table.table_tour(
-        tour= tour,
-        id_accommodation= id_accommodation
+        id_accommodation= id_accommodation,
+        tour= tour
     )
 
     return JSONResponse(content={"message": "Table tour created"})
