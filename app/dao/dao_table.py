@@ -1,5 +1,6 @@
 import mysql.connector
 
+from models.models_table import Accomodation, Transport, Tour
 from parameters import HOST, USER, PASSWORD, DATABASE
 
 def connect_database(host, user, password, database):
@@ -18,7 +19,7 @@ def connect_database(host, user, password, database):
 
     return connetion, cursor
 
-def table_accommodation(id, travel_destination, travel_style, accommodation_style, is_country, warn, mild, cold, price, details, local_name):
+def table_accommodation(accommodation: Accomodation):
     connection, cursor = connect_database(
         host=HOST, 
         user=USER, 
@@ -30,11 +31,11 @@ def table_accommodation(id, travel_destination, travel_style, accommodation_styl
     INSERT INTO accomodation 
     (id, travel_destination, travel_style, accommodation_style, is_country, warn, mild, cold, price, details, local_name) 
     VALUES
-    (default, {atravel_destination}, {travel_style}, {accommodation_style}, {is_country}, {warn}, {mild}, {cold}, {price}, '{details}', {local_name});    
+    (default, {accommodation.travel_destination}, {accommodation.travel_style}, {accommodation.accommodation_style}, {accommodation.is_country}, {accommodation.warn}, {accommodation.mild}, {accommodation.cold}, {accommodation.price}, '{accommodation.details}', {accommodation.local_name});    
     """
 
 
-def table_transport(id, night_style, music_preference, building_preference, tradicion_preference, party_preference, water_preference, walk_preference, historic_preference, sport_preference, food_preference, id_accommodation, price, details):
+def table_transport(transport: Transport):
     connection, cursor = connect_database(
         host=HOST, 
         user=USER, 
@@ -46,7 +47,7 @@ def table_transport(id, night_style, music_preference, building_preference, trad
     INSERT INTO tour
     (id, night_style, music_preference, building_preference, tradicion_preference, party_preference, water_preference, walk_preference, historic_preference, sport_preference, food_preference, id_accommodation, price, details)
     VALUES
-    (default, {night_style}, {music_preference}, {building_preference}, {tradicion_preference}, {party_preference}, {water_preference}, {historic_preference}, {sport_preference}, {food_preference}, {id_accommodation}, {price}, {details})
+    (default, {transport.night_style}, {transport.music_preference}, {transport.building_preference}, {transport.tradicion_preference}, {transport.party_preference}, {transport.water_preference}, {transport.historic_preference}, {transport.sport_preference}, {transport.food_preference}, {transport.id_accommodation}, {transport.price}, '{transport.details}')
     """
 
     
@@ -62,5 +63,5 @@ def table_transport(transport: Transport):
     INSERT INTO transport
     (id, details, price, transport_style)
     VALUES
-    (default, {tour.details}, {price}, {transport_style})
+    (default, '{tour.details}', {tour.price}, {tour.transport_style})
     """
