@@ -50,7 +50,7 @@ def table_transport(id, night_style, music_preference, building_preference, trad
     """
 
     
-def table_transport(id, details, price, transport_style):
+def table_transport(transport: Transport):
     connection, cursor = connect_database(
         host=HOST, 
         user=USER, 
@@ -62,5 +62,5 @@ def table_transport(id, details, price, transport_style):
     INSERT INTO transport
     (id, details, price, transport_style)
     VALUES
-    (default, {details}, {price}, {transport_style})
+    (default, {tour.details}, {price}, {transport_style})
     """
