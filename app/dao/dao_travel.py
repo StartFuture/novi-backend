@@ -102,13 +102,17 @@ def next_travel(id_user: int):
     query = f"""
     SELECT tl.id as id_travel, 
 	      tl.id_accommodation, 
-          tl.id_transport_from, 
+          tl.id_transport_from,
+          tl.id_transport_return, 
           tl.date_from, 
           tl.quantity_people, 
           t.id as id_transport, 
-          t.transport_style
+          t.transport_style,
+          t.details as transport_details,
           a.id as id_accommodation,
           a.travel_destination,
+          t2.id_tour,
+          t3.details as tour_details
 	FROM travel tl 
     LEFT JOIN transport t ON tl.id_transport_from = t.id
     LEFT JOIN accommodation a ON a.id = tl.id_accommodation 
