@@ -2,7 +2,7 @@ from fastapi import FastAPI, status, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes import autentication, users, destinations, reviews, profile, objective, travel_quiz, password_edit, travel
+from routes import autentication, users, destinations, reviews, profile, objective, travel_quiz, password_edit, travel, table
 
 app = FastAPI()
 
@@ -33,6 +33,7 @@ app.include_router(travel_quiz.router, prefix="/travel_quiz", tags=['Questionár
 app.include_router(destinations.router, prefix="/destination", tags=['Destinatination']) # Remover Destination
 app.include_router(password_edit.router, prefix="/password", tags=['Edição de senha'])
 app.include_router(travel.router, prefix="/travel", tags=['Viagens'])
+app.include_router(table.router, prefix="/table", tags=['Tabelas'])
 
 # python3 -m uvicorn app:app --reload
 

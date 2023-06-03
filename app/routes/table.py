@@ -6,21 +6,33 @@ from models.models_table import Accomodation, Transport, Tour
 
 router = APIRouter()
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
-def write_table_data(accommodation: Accomodation, transport: Transport, tour: Tour):
+@router.post("/accommodation", status_code=status.HTTP_201_CREATED)
+def write_table_accommodation(accommodation: Accomodation, transport: Transport, tour: Tour):
 
     id_accommodation = dao_table.table_accommodation(
         accommodation= accommodation
     )
 
+
+
+    return JSONResponse(content={"id_accommodation": id_accommodation})
+
+@router.post("/trasnport", status_code=status.HTTP_201_CREATED)
+def write_table_transport(id_accommodation: int, transport: Transport):
+
     dao_table.table_transport(
         transport= transport,
         id_accommodation= id_accommodation
     )
+    
+    return JSONResponse(content={"message": "Table transport created"})
+
+@router.post("/tour", status_code=status.HTTP_201_CREATED)
+def write_table_tour(id_accommodation: int, tour: Tour):
 
     dao_table.table_tour(
         tour= tour,
         id_accommodation= id_accommodation
     )
 
-    return JSONResponse(content={"message": "Tables accommodation, trasnport, tour created"})
+    return JSONResponse(content={"message": "Table tour created"})
