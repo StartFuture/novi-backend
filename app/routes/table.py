@@ -7,7 +7,7 @@ from models.models_table import Accomodation, Transport, Tour
 router = APIRouter()
 
 @router.post("/accommodation", status_code=status.HTTP_201_CREATED)
-def write_table_accommodation(accommodation: Accomodation, transport: Transport, tour: Tour):
+def write_table_accommodation(accommodation: Accomodation):
 
     id_accommodation = dao_table.table_accommodation(
         accommodation= accommodation
