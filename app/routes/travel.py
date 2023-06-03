@@ -63,3 +63,5 @@ def get_next_travel(id_user: int):
     query_travel = dao_travel.next_travel(id_user)
 
     query_travel['date_from'] = utils.format_date(query_travel['date_from'])
+
+    return JSONResponse(content=query_travel)
