@@ -30,7 +30,7 @@ def table_accommodation(id, travel_destination, travel_style, accommodation_styl
     INSERT (id, travel_destination, travel_style, accommodation_style, is_country, warn, mild, cold, price, details, local_name) 
     INTO accomodation 
     VALUES
-    (default, {travel_destination},{travel_style}, {accommodation_style}, {is_country}, {warn}, {mild}, {cold}, {price}, '{details}', {local_name});    
+    (default, {travel_destination}, {travel_style}, {accommodation_style}, {is_country}, {warn}, {mild}, {cold}, {price}, '{details}', {local_name});    
     """
 
 
