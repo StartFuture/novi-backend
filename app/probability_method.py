@@ -40,6 +40,7 @@ def probability_calculation_travels(travels: dict, user_quiz: dict):
 
 
 def probability_calculation_preference_and_transport(id_accommodation: int, user_quiz: dict):
+   #calculo para passeios e transporte
    transport_points = []
    best_tours = []
    transports_and_tours = get_transport_and_tours_travel(id_accommodation=id_accommodation)
