@@ -6,16 +6,18 @@ from models.models_travel import Travel,  TravelCalc
 import probability_method
 from utils import get_user_id
 
+
 router = APIRouter()
 
-@router.post('/', status_code=status.HTTP_201_CREATED)
-def write_data(token: str, travel: Travel):
 
-    try:
-        id_user = get_user_id(token)
-    except Exception:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail='User not authorized')
+@router.post('/', status_code=status.HTTP_201_CREATED)
+def write_data(id_user: int, travel: Travel):
+
+    # try:
+    #     id_user = 2 #utils.get_user_id(token)
+    # except Exception:
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+    #                         detail='User not authorized')
 
     id_travel, messages = dao_travel.new_travel(
         id_user= id_user,
@@ -29,22 +31,28 @@ def write_data(token: str, travel: Travel):
     )
 
     dao_travel.new_travel_tour(
-        id_travel= id_travel,
+        id_travel= id_travel['LAST_INSERT_ID()'],
         id_tour= travel.id_tour
     )
 
     return JSONResponse(content=messages['message'])
 
+
 @router.get("/history/{id_user}", status_code=status.HTTP_200_OK)
 def get_history(id_user: int):
     
     query_travel = dao_travel.select_history(id_user)
+    
 
-    data = query_travel
-    print(data)
+    new_query_travel = []
+    for item in query_travel:
+        item['date_from'] = utils.format_date(item['date_from'])
+        item['travel_destination'] = utils.format_travel(item['travel_destination'])
+        new_query_travel.append(item)
+
+    data = {'travel_history': new_query_travel}
 
     return JSONResponse(content=data)
-
 
 
 @router.post('/probality_method', status_code=status.HTTP_200_OK)

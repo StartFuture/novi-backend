@@ -267,7 +267,7 @@ async def update_line_address(id_address: int, address: AddressUpdate):
 
 
 # Verifica a existência do usuário
-async def verify_user_exist(id_user: int):
+def verify_user_exist(email: int):
     connection,cursor = conect_database(
         host=HOST, 
         user=USER, 
@@ -275,13 +275,13 @@ async def verify_user_exist(id_user: int):
         database=DATABASE
     )
 
-    query = f"SELECT id FROM user WHERE id = {id_user}"
+    query = f"SELECT id AS id_user, password_user FROM user WHERE email = '{email}'"
 
     cursor.execute(query)
     result = cursor.fetchone()
     connection.close()
 
-    return bool(result)
+    return result
 
 
 # Verifica usuário por id

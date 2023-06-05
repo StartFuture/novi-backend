@@ -31,9 +31,9 @@ def auth(user: models_auth.UserModel) -> dict:
                         return {'message': 'Token is valid'}
 
                     else:#Se data de expiração é maior que 3 entao token e invalido:
-                        #dao.insert_revoked_token(id_token=token_result['id_token'], id_user=token_result['id_user'])#colocando token na tabela revoked_token
+                        dao.insert_revoked_token(id_token=token_result['id_token'], id_user=token_result['id_user'])#colocando token na tabela revoked_token
                         token = utils.signJWT(user_id=query_result['id_user'])#criar novo token
-                        #dao.update_token(token_result['id_user'])#Atualizando data de expiração do token no banco
+                        dao.update_token(token_result['id_user'])#Atualizando data de expiração do token no banco
                         return token# retorna novo token para o front
                 else:#se token esta revogado:
                     token = utils.signJWT(query_result['id_user'])#criar novo token

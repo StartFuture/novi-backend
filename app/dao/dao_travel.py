@@ -43,8 +43,6 @@ def new_travel(id_user: int, id_accommodation: int, id_transport_from: int , id_
 
     cursor.execute(query)
     id_travel = cursor.fetchone()
-
-
     connection.close()
 
     return id_travel, {'message': 'Travel Created Succesfully'}
@@ -66,10 +64,10 @@ def new_travel_tour(id_travel: int, id_tour: int):
 
     cursor.execute(create_travel_tour)
     connection.commit()
-
     connection.close()
 
     return {'message': 'TravelTour Created Succesfully'}
+
 
 def select_history(id_user: int):
     connection, cursor = connect_database(
@@ -80,10 +78,12 @@ def select_history(id_user: int):
     )
 
     query = f"""
-    SELECT date_from, quantity_people FROM travel
-    WHERE id_user = {id_user}
-    ORDER BY date_from
-    LIMIT 3
+    SELECT DISTINCT t.date_from, t.quantity_people, a.travel_destination, a.local_name
+    FROM travel t
+    LEFT JOIN accommodation a on a.id = t.id_accommodation 
+    WHERE id_user = {id_user} AND date_from < CURRENT_DATE AND date_return < CURRENT_DATE
+    ORDER BY date_from DESC
+    LIMIT 3;
     """
 
     cursor.execute(query)
