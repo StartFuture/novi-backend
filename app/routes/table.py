@@ -17,7 +17,7 @@ def write_table_accommodation(accommodation: Accomodation):
 
     return JSONResponse(content={"id_accommodation": id_accommodation})
 
-@router.post("/trasnport", status_code=status.HTTP_201_CREATED)
+@router.post("/transport", status_code=status.HTTP_201_CREATED)
 def write_table_transport(id_accommodation: int, transport: Transport):
 
     dao_table.table_transport(
