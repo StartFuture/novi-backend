@@ -3,20 +3,20 @@ from fastapi.responses import JSONResponse
 
 from dao import dao_travel
 from models.models_travel import Travel
-from utils import get_user_id
+import utils
 
 router = APIRouter()
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-async def write_data(id_user: int, travel: Travel):
+def write_data(id_user: int, travel: Travel):
 
     # try:
-    #     id_user = 2 #get_user_id(token)
+    #     id_user = 2 #utils.get_user_id(token)
     # except Exception:
     #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
     #                         detail='User not authorized')
 
-    id_travel, messages = await dao_travel.new_travel(
+    id_travel, messages = dao_travel.new_travel(
         id_user= id_user,
         id_accommodation= travel.id_accommodation,
         id_transport_from= travel.id_transport_from,
@@ -27,9 +27,24 @@ async def write_data(id_user: int, travel: Travel):
         price= travel.price ##? Preço publico no FrontEnd
     )
 
-    await dao_travel.new_tour(
-        id_travel= id_travel,
+    dao_travel.new_travel_tour(
+        id_travel= id_travel['LAST_INSERT_ID()'],
         id_tour= travel.id_tour
     )
 
     return JSONResponse(content=messages['message'])
+
+@router.get("/history/{id_user}", status_code=status.HTTP_200_OK)
+def get_history(id_user: int):
+    
+    query_travel = dao_travel.select_history(id_user)
+    
+
+    new_query_travel = []
+    for item in query_travel:
+        item['date_from'] = utils.format_date(item['date_from'])
+        item['travel_destination'] = utils.format_travel(item['travel_destination'])
+        new_query_travel.append(item)
+
+    data = {'travel_history': new_query_travel}
+    return JSONResponse(content=data)

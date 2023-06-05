@@ -48,6 +48,7 @@ create table accommodation (
     cold INT(1) NOT NULL,
     price DECIMAL(10,2) NOT NULL,
     details VARCHAR(255) NOT NULL,
+    local_name VARCHAR(100) NOT NULL,
     PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

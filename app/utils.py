@@ -40,9 +40,31 @@ def username_processing(name_user: str):
         return name_user, last_name
 
 
-# Formatar date de dicionário para formato DD/MM/YYYY
+# Formatar date de dicionário para formato YYYY-MM-DD
 def format_date(date):
-    return f"{date.day}/{date.month}/{date.year}"
+    return f"{date.year}-{date.month}-{date.day}"
+
+
+def format_travel(item):
+    if item == 1:
+        item = 'Praia e litoral'
+    if item == 2:
+        item = 'Paisagens Naturais'
+    if item == 3:
+        item = 'Cidades Históricas'
+    if item == 4:
+        item = 'Aventura'
+    if item == 5:
+        item = 'Natureza Exuberante'
+    return item
+
+
+
+# Praia e litoral
+# Montanhas e paisagens naturais 
+# Cidades históricas e culturais 
+# Aventura e esportes radicais 
+# Natureza exuberante e vida selvagem
 
 
 # Processar dado da tabela Address
@@ -78,11 +100,7 @@ def consult_ddi(cellphone: str):
     
 
 def decrypt_token(token: str) -> dict[str]:
-    print("token = " + token)
-    print("algorithms = " + JWT_ALGORITHM)
-    print("secret = " + JWT_SECRET)
     result = jwt.decode(access_token=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
-    print(result)
 
     return result
 
