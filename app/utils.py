@@ -107,10 +107,9 @@ def decrypt_token(token: str) -> dict[str]:
 
 def get_user_id(token: str) -> int:
     user = decrypt_token(token=token)
-    logging.warning(user)
     if not "sub" in user:
-        raise ValueError('Token incorrect')
-
+       raise ValueError('Token incorrect')
+    
     return int(user['sub'])
 
 
@@ -132,3 +131,4 @@ def verify_token(token: str = Depends(oauth)): # transformar em decorator
     except JWTError:
         raise HTTPException(detail={'msg': 'missing token'}, 
                              status_code=status.HTTP_401_UNAUTHORIZED)
+
