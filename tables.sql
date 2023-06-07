@@ -37,38 +37,38 @@ create table transport (
     PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create table accommodation (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    travel_destination INT(2) NOT NULL,
-    travel_style INT(2) NOT NULL,
-    accommodation_style INT(1) NOT NULL,
-    is_country BOOLEAN NOT NULL,
-    warm int(1) NOT NULL,
-    mild INT(1) NOT NULL,
-    cold INT(1) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    details VARCHAR(255) NOT NULL,
-    local_name VARCHAR(100) NOT NULL,
-    PRIMARY KEY(id)
+create table `accommodation` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `travel_destination` INT(2) NOT NULL,
+    `travel_style` INT(2) NOT NULL,
+    `accommodation_style` INT(1) NOT NULL,
+    `is_country` BOOLEAN NOT NULL,
+    `warm` int(1) NOT NULL,
+    `mild` INT(1) NOT NULL,
+    `cold` INT(1) NOT NULL,
+    `price` DECIMAL(10,2) NOT NULL,
+    `details` VARCHAR(255) NOT NULL,
+    `local_name` VARCHAR(100) NOT NULL,
+    PRIMARY KEY(`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create table tour (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    night_style INT(1) NOT NULL,
-    music_preference INT(1) NOT NULL,
-    building_preference INT(1) NOT NULL,
-    tradicion_preference INT(1) NOT NULL,
-    party_preference INT(1) NOT NULL,
-    water_preference INT(1) NOT NULL,
-    walk_preference INT(1) NOT NULL,
-    historic_preference INT(1) NOT NULL,
-    sport_preference INT(1) NOT NULL,
-    food_preference INT(1) NOT NULL,
-    id_accommodation BIGINT NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    details VARCHAR(255) NOT NULL,
-    PRIMARY KEY(id),
-    FOREIGN KEY(id_accommodation) REFERENCES accommodation(id)
+create table `tour` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `night_style` INT(1) NOT NULL,
+    `music_preference` INT(1) NOT NULL,
+    `building_preference` INT(1) NOT NULL,
+    `tradicion_preference` INT(1) NOT NULL,
+    `party_preference` INT(1) NOT NULL,
+    `water_preference` INT(1) NOT NULL,
+    `walk_preference` INT(1) NOT NULL,
+    `historic_preference` INT(1) NOT NULL,
+    `sport_preference` INT(1) NOT NULL,
+    `food_preference` INT(1) NOT NULL,
+    `id_accommodation` BIGINT NOT NULL,
+    `price` DECIMAL(10,2) NOT NULL,
+    `details` VARCHAR(255) NOT NULL,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY(`id_accommodation`) REFERENCES `accommodation`(`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 create table travel (
@@ -146,3 +146,9 @@ create table weather_option(
   primary key(id_weather_option),
   foreign key(id_user) references user(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+
+

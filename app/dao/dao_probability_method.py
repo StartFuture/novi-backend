@@ -161,3 +161,5 @@ def get_travel_abroad():
     else:
         connection.close()
         return result
+    
+

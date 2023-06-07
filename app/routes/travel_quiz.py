@@ -1,15 +1,16 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from dao import dao_travel_quiz
 from models.models_travel_quiz import travel_activities, travel_options, travel_cultures, weather_option
+import utils
 
 
 router = APIRouter()
 
 
 @router.post('/insert_user_questionnaire', status_code=status.HTTP_200_OK)
-def insert_user_questionnaire(activitie: travel_activities, options: travel_options, culture: travel_cultures, weather: weather_option, id_user: dict):
-    id_user = id_user['id_user']
+def insert_user_questionnaire(activitie: travel_activities, options: travel_options, culture: travel_cultures, weather: weather_option, token: str = Depends(utils.verify_token)):
+    id_user = token["sub"]
     result_activitie = dao_travel_quiz.insert_travel_activitie(activitie=activitie, id_user=id_user)
     result_opitions = dao_travel_quiz.insert_travel_options(option=options, id_user=id_user)
     result_cultures = dao_travel_quiz.insert_travel_cultures(culture=culture, id_user=id_user)

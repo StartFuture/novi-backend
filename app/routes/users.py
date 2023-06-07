@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 import requests
 
@@ -9,9 +9,10 @@ import utils
 
 router = APIRouter()
 
-@router.delete("/delete_user/{id_user}", status_code=status.HTTP_200_OK)
-def delete(id_user: int):
-    query_result = dao_users.delete_user_by_id(id_user=id_user)
+
+@router.delete("/delete_user", status_code=status.HTTP_200_OK)
+def delete(token: str = Depends(utils.verify_token)):
+    query_result = dao_users.delete_user_by_id(id_user=token["sub"])
     if query_result:
         return {'message': 'user delete.'}
     else:
@@ -26,10 +27,10 @@ def read_data():
 
 
 #Lista usuário
-@router.get('/{id_user}', status_code=status.HTTP_302_FOUND)
-async def read_user_data(id_user: int,):
+@router.get('/read_user', status_code=status.HTTP_302_FOUND)
+async def read_user_data(token: str = Depends(utils.verify_token)):
 
-    query_user, id_address = await dao_users.select_user(id_user)
+    query_user, id_address = await dao_users.select_user(token["sub"])
 
     if query_user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -46,8 +47,8 @@ async def read_user_data(id_user: int,):
 #Criação de Usuário
 @router.post('/create_user', status_code=status.HTTP_201_CREATED)
 async def write_data(address: Address, user: User):
-   
-   #Verificação de CEP
+    
+    #Verificação de CEP
     address.cep = utils.cep_data_processing(address.cep)
     request =requests.get('https://viacep.com.br/ws/{}/json/'.format(address.cep))
     address_data = request.json()
@@ -66,11 +67,11 @@ async def write_data(address: Address, user: User):
     cpf_verify, email_verify = await dao_users.verify_data_overwrite(user.cpf, user.email)
     ddi_verify = utils.consult_ddi(user.cellphone)
 
-    
+
     #Verificando Erros
     if not ddi_verify:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                             detail=f'cannot create user. ddi {user.cellphone} is invalid')
+                                detail=f'cannot create user. ddi {user.cellphone} is invalid')
     if cpf_verify:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail=f'Cannot create user. CPF {user.cpf} alredy exist')
@@ -101,7 +102,7 @@ async def write_data(address: Address, user: User):
         cpf= user.cpf,
         cellphone= user.cellphone,
         id_address= result['LAST_INSERT_ID()'],
-        password_user= user.password_user,
+        password_user= utils.get_pwd_hash(user.password_user),
         news= user.news,
         info_conditions= user.info_conditions,
         share_data= user.share_data
@@ -110,8 +111,8 @@ async def write_data(address: Address, user: User):
 
     return JSONResponse(content={'message': f'User {user.name_user}, created successfully'})
 
-@router.patch('/update_user/{id_user}', status_code=status.HTTP_200_OK)
-async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, news_update: NewsUpdate):
+@router.patch('/update_user', status_code=status.HTTP_200_OK)
+async def update_data(address: AddressUpdate, user: UserUpdate, news_update: NewsUpdate, token: str = Depends(utils.verify_token)):
 
     #Verificação de CEP
     if address.cep is not None:
@@ -130,8 +131,8 @@ async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, ne
     address.city, address.address_user, address.complements = await utils.address_data_processing(address.city, address.address_user, address.complements)
     user.name_user, last_name = utils.username_processing(user.name_user)
     user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
-    verify_cpf, verify_email = await dao_users.verify_data_users(id_user, user.cpf, user.email)
-    verify_user = await dao_users.verify_user_exist_by_id(id_user)
+    verify_cpf, verify_email = await dao_users.verify_data_users(token["sub"], user.cpf, user.email)
+    verify_user = await dao_users.verify_user_exist_by_id(token["sub"])
 
     #Verificando Erros
     if not verify_user:
@@ -146,12 +147,12 @@ async def update_data(id_user: int, address: AddressUpdate, user: UserUpdate, ne
     
     #atualizando usuário
     result = await dao_users.update_line_users(
-        id_user= id_user,
+        id_user= token["sub"],
         last_name= last_name,
         user= user
     )
     await dao_users.update_line_users_news(
-        id_user= id_user,
+        id_user= token["sub"],
         news= news_update.news
     )
 

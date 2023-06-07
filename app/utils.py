@@ -4,6 +4,7 @@ import requests
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, status, HTTPException
+from passlib.context import CryptContext
 import logging
 
 from parameters import JWT_SECRET, JWT_ALGORITHM
@@ -11,6 +12,8 @@ LINK_API = "https://api-paises.pages.dev/paises.json"
 
 
 oauth = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+crypt = CryptContext(schemes=['bcrypt'])
 
 # Processar dados de usuário
 async def user_data_processing(cpf: str, cellphone: str, email: str):
@@ -93,14 +96,16 @@ def consult_ddi(cellphone: str):
     response = requests.get(LINK_API)
     for value in response.json().values():
         list_ddi.append(value['ddi'])
-    if ddi in list_ddi:
+       
+    if int(ddi) in list_ddi:
         return True
     else: 
         return False
     
 
-def decrypt_token(token: str) -> dict[str]:
-    result = jwt.decode(access_token=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
+def decrypt_token(token: str):
+    print(token)
+    result = jwt.decode(token=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
 
     return result
 
@@ -113,22 +118,37 @@ def get_user_id(token: str) -> int:
     return int(user['sub'])
 
 
-def signJWT(user_id: str) -> dict[str]:
+def signJWT(user_id: str, email: str) -> dict[str]:
+
     payload = {
-        "sub": user_id,
-        "exp": datetime.utcnow() + timedelta(minutes=30),
+        "sub": str(user_id),
+        "email": email,
+        "exp": datetime.utcnow() + timedelta(minutes=30)
     }
+
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
     
     return {'access_token': token}
 
 
 def verify_token(token: str = Depends(oauth)): # transformar em decorator
-
+    
     try:
-        payload = jwt.decode(token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
+        payload = jwt.decode(token=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
+        payload["sub"] = int(payload["sub"])
         return payload
     except JWTError:
         raise HTTPException(detail={'msg': 'missing token'}, 
-                             status_code=status.HTTP_401_UNAUTHORIZED)
+                            status_code=status.HTTP_401_UNAUTHORIZED)
 
+
+
+
+def get_pwd_hash(password):
+
+    return crypt.hash(password)
+
+
+def check_pwd_hash(password_hash, password):
+
+    return crypt.verify(password, password_hash)
