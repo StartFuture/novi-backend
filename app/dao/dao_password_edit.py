@@ -30,7 +30,7 @@ def verify_user_password(id_user: int):
         password=PASSWORD,
         database=DATABASE
     )
-    query = f"""select password_user from table_users where id_user = {id_user};"""
+    query = f"""select password_user from user where id = {id_user};"""
     
     try:
         cursor.execute(query)
@@ -52,7 +52,7 @@ def update_password_user(id_user: int, new_password: str):
         database=DATABASE
     )
 
-    action = f"""UPDATE table_users SET password_user='{new_password}' WHERE id_user = {id_user} ;"""
+    action = f"""UPDATE user SET password_user = '{new_password}' WHERE id = {id_user} ;"""
     
     try:
         cursor.execute(action)

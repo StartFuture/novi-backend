@@ -1,17 +1,17 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 
 from dao import dao_travel, dao_probability_method
-from models.models_travel import Travel,  TravelCalc
+from models.models_travel import Travel
 import probability_method
-from utils import get_user_id
+import utils
 
 
 router = APIRouter()
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def write_data(id_user: int, travel: Travel):
+def write_data(travel: Travel, token: str = Depends(utils.verify_token)):
 
     # try:
     #     id_user = 2 #utils.get_user_id(token)
@@ -20,7 +20,7 @@ def write_data(id_user: int, travel: Travel):
     #                         detail='User not authorized')
 
     id_travel, messages = dao_travel.new_travel(
-        id_user= id_user,
+        id_user= token["sub"],
         id_accommodation= travel.id_accommodation,
         id_transport_from= travel.id_transport_from,
         id_transport_return= travel.id_transport_return,
@@ -38,10 +38,10 @@ def write_data(id_user: int, travel: Travel):
     return JSONResponse(content=messages['message'])
 
 
-@router.get("/history/{id_user}", status_code=status.HTTP_200_OK)
-def get_history(id_user: int):
+@router.get("/history", status_code=status.HTTP_200_OK)
+def get_history(token: str = Depends(utils.verify_token)):
     
-    query_travel = dao_travel.select_history(id_user)
+    query_travel = dao_travel.select_history(token["sub"])
     
 
     new_query_travel = []
@@ -56,13 +56,19 @@ def get_history(id_user: int):
 
 
 @router.post('/probality_method', status_code=status.HTTP_200_OK)
-def get_probability_method(id_user: int):
-    user_quiz = dao_probability_method.get_user_questions(id_user=id_user)
+def get_probability_method(token: str = Depends(utils.verify_token)):
+
+    user_quiz = dao_probability_method.get_user_questions(id_user=token["sub"])
+    
     if user_quiz['can_leave_country'] == 1:
+
         travel_abroad = dao_probability_method.get_travel_abroad()
         result = probability_method.probability_calculation_travels(travels=travel_abroad, user_quiz=user_quiz)
+
     else:
+
         travel_data = dao_probability_method.get_travels()
         result = probability_method.probability_calculation_travels(travels=travel_data, user_quiz=user_quiz)
 
     return JSONResponse(result) 
+

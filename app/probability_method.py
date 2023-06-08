@@ -1,4 +1,4 @@
-from dao.dao_probability_method import get_transport_and_tours_travel, get_tour_travel
+from dao.dao_probability_method import get_transport_and_tours_travel
 
 
 
@@ -133,4 +133,3 @@ def total_price_travel(travels: dict):
       travel['total_price'] += price_all_tours
    
    return travels
-   
