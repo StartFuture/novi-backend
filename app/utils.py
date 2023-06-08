@@ -7,7 +7,7 @@ from fastapi import Depends, status, HTTPException
 from passlib.context import CryptContext
 import logging
 
-from parameters import JWT_SECRET, JWT_ALGORITHM
+from parameters import JWT_SECRET, JWT_ALGORITHM, TIME_EXPIRES
 LINK_API = "https://api-paises.pages.dev/paises.json"
 
 
@@ -89,6 +89,7 @@ def cep_data_processing(cep:str):
 
     return cep, city, address_user
 
+
 # Validação de ddi
 def consult_ddi(cellphone: str):    
     ddi = cellphone.replace('+', '')[:2]
@@ -101,21 +102,6 @@ def consult_ddi(cellphone: str):
         return True
     else: 
         return False
-    
-
-def decrypt_token(token: str):
-    print(token)
-    result = jwt.decode(token=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
-
-    return result
-
-
-def get_user_id(token: str) -> int:
-    user = decrypt_token(token=token)
-    if not "sub" in user:
-       raise ValueError('Token incorrect')
-    
-    return int(user['sub'])
 
 
 def signJWT(user_id: str, email: str) -> dict[str]:
@@ -123,7 +109,7 @@ def signJWT(user_id: str, email: str) -> dict[str]:
     payload = {
         "sub": str(user_id),
         "email": email,
-        "exp": datetime.utcnow() + timedelta(minutes=30)
+        "exp": datetime.utcnow() + timedelta(minutes=TIME_EXPIRES)
     }
 
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
@@ -137,11 +123,10 @@ def verify_token(token: str = Depends(oauth)): # transformar em decorator
         payload = jwt.decode(token=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
         payload["sub"] = int(payload["sub"])
         return payload
+    
     except JWTError:
         raise HTTPException(detail={'msg': 'missing token'}, 
                             status_code=status.HTTP_401_UNAUTHORIZED)
-
-
 
 
 def get_pwd_hash(password):

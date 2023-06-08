@@ -12,8 +12,8 @@ router = APIRouter()
 
 @router.post('/password_edit', status_code=status.HTTP_200_OK)
 def password_edit(current_password: dict, new_password: dict, token: str = Depends(utils.verify_token)):
+    
     id_user = token["sub"]
-
 
     new_password = utils.get_pwd_hash(password=new_password['new_password'])
     current_password = current_password['current_password']

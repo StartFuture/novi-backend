@@ -11,3 +11,4 @@ PORT = os.getenv("DB_PORT")
 
 JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
+TIME_EXPIRES = 30
