@@ -3,16 +3,17 @@ from datetime import datetime
 import mysql.connector
 import pydantic
 
-from parameters import HOST, USER, PASSWORD, DATABASE
+from parameters import HOST, USER, PASSWORD, DATABASE, PORT
 from models.user_model import  AddressUpdate, UserUpdate
 
-def conect_database(host, user, password, database):
+def conect_database(host, user, password, database, port = 3306):
 
     """Essa função tem como objetivo se conectar
     com o banco de dados"""
 
     connetion= mysql.connector.connect(
         host=host,
+        port=int(port),
         user=user,
         password=password,
         database=database,
@@ -26,9 +27,10 @@ def conect_database(host, user, password, database):
 # Deleta linha de usuário por id
 def delete_user_by_id(id_user: int):
     connection, cursor = conect_database(
-        host=HOST,
-        user=USER,
-        password=PASSWORD,
+        host=HOST, 
+        port=PORT, 
+        user=USER, 
+        password=PASSWORD, 
         database=DATABASE
     )
 
@@ -51,6 +53,7 @@ def delete_user_by_id(id_user: int):
 def select_all():
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -69,6 +72,7 @@ def select_all():
 async def select_user(id_user: int):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -92,6 +96,7 @@ async def select_user(id_user: int):
 async def select_address(id_address: int):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -110,6 +115,7 @@ async def select_address(id_address: int):
 async def insert_new_line_address(cep: str, state_user: str, city: str, address_user: str, address_number: str, complements: str):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -137,6 +143,7 @@ async def insert_new_line_address(cep: str, state_user: str, city: str, address_
 async def insert_new_line_user(name_user: str, last_name: str, date_birth: str, email: str, cpf: str, cellphone: str, id_address: int, password_user: str, news: bool, info_conditions:bool, share_data:bool):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -160,6 +167,7 @@ async def insert_new_line_user(name_user: str, last_name: str, date_birth: str, 
 async def verify_data_overwrite(cpf: str, email: str):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -183,6 +191,7 @@ async def verify_data_overwrite(cpf: str, email: str):
 async def verify_email(email: str):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -201,6 +210,7 @@ async def verify_email(email: str):
 async def update_line_users(id_user: int, last_name: str, user: UserUpdate):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -232,6 +242,7 @@ async def update_line_users(id_user: int, last_name: str, user: UserUpdate):
 async def update_line_users_news(id_user: int, news: bool):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -250,6 +261,7 @@ async def update_line_users_news(id_user: int, news: bool):
 async def update_line_address(id_address: int, address: AddressUpdate):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -270,6 +282,7 @@ async def update_line_address(id_address: int, address: AddressUpdate):
 def verify_user_exist(email: int):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -288,6 +301,7 @@ def verify_user_exist(email: int):
 async def verify_user_exist_by_id(id_user: int):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
@@ -306,6 +320,7 @@ async def verify_user_exist_by_id(id_user: int):
 async def verify_data_users(id_user: int, cpf: str, email: str):
     connection,cursor = conect_database(
         host=HOST, 
+        port=PORT, 
         user=USER, 
         password=PASSWORD, 
         database=DATABASE
