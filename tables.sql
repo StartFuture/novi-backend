@@ -29,12 +29,12 @@ create table `user` (
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-create table transport (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    details VARCHAR(255) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    transport_style INT(1) NOT NULL,
-    PRIMARY KEY(id)
+create table `transport` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `details` VARCHAR(255) NOT NULL,
+    `price` DECIMAL(10,2) NOT NULL,
+    `transport_style` INT(1) NOT NULL,
+    PRIMARY KEY(`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 create table `accommodation` (
