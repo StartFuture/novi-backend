@@ -4,9 +4,9 @@ import mysql.connector
 import pydantic
 
 from parameters import HOST, USER, PASSWORD, DATABASE, PORT
-from models.user_model import  AddressUpdate, UserUpdate
+from models.models_user import  AddressUpdate, UserUpdate
 
-def conect_database(host, user, password, database, port):
+def conect_database(host, user, password, database, port = 3306):
 
     """Essa função tem como objetivo se conectar
     com o banco de dados"""
@@ -27,9 +27,10 @@ def conect_database(host, user, password, database, port):
 # Deleta linha de usuário por id
 def delete_user_by_id(id_user: int):
     connection, cursor = conect_database(
-        host=HOST,
-        user=USER,
-        password=PASSWORD,
+        host=HOST, 
+        port=PORT, 
+        user=USER, 
+        password=PASSWORD, 
         database=DATABASE
     )
 

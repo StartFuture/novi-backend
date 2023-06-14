@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
+
 from dao import dao
-from models.user_model import user_review
+from models.models_user import user_review
 import utils
 
 

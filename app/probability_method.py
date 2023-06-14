@@ -1,7 +1,6 @@
 from dao.dao_probability_method import get_transport_and_tours_travel
 
 
-
 def probability_calculation_travels(travels: dict, user_quiz: dict):
     travel_points = {}
     #calculo para Viagens
@@ -73,8 +72,7 @@ def probability_calculation_preference_and_transport(id_accommodation: int, user
    best_tours = sorted(best_tours, key=lambda x: x['points_tour'])
    
 
-   return best_tours    
-
+   return best_tours
 
 
 def map_json(travels: list):

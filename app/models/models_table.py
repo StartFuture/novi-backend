@@ -12,10 +12,12 @@ class Accomodation(BaseModel):
     details: str
     local_name: str
 
+
 class Transport(BaseModel):
     details: str
     price: float
     transport_style: int
+
 
 class Tour(BaseModel):
     night_style: int

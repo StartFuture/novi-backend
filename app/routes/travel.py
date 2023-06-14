@@ -71,4 +71,3 @@ def get_probability_method(token: str = Depends(utils.verify_token)):
         result = probability_method.probability_calculation_travels(travels=travel_data, user_quiz=user_quiz)
 
     return JSONResponse(result) 
-

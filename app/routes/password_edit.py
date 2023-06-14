@@ -5,8 +5,6 @@ from dao import dao_password_edit
 import utils
 
 
-
-
 router = APIRouter()
 
 
