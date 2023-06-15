@@ -13,11 +13,11 @@ router = APIRouter()
 @router.post('/', status_code=status.HTTP_201_CREATED)
 def write_data(travel: Travel, token: str = Depends(utils.verify_token)):
 
-    # try:
-    #     id_user = 2 #utils.get_user_id(token)
-    # except Exception:
-    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-    #                         detail='User not authorized')
+    try:
+        id_user = token["sub"]
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail='User not authorized')
 
     id_travel, messages = dao_travel.new_travel(
         id_user= token["sub"],
@@ -35,6 +35,7 @@ def write_data(travel: Travel, token: str = Depends(utils.verify_token)):
         id_tour= travel.id_tour
     )
 
+
     return JSONResponse(content=messages['message'])
 
 
@@ -42,7 +43,6 @@ def write_data(travel: Travel, token: str = Depends(utils.verify_token)):
 def get_history(token: str = Depends(utils.verify_token)):
     
     query_travel = dao_travel.select_history(token["sub"])
-    
 
     new_query_travel = []
     for item in query_travel:
@@ -52,9 +52,19 @@ def get_history(token: str = Depends(utils.verify_token)):
 
     data = {'travel_history': new_query_travel}
 
-    return JSONResponse(content=data)
+        return JSONResponse(content=data)
 
 
+@router.get("/next_travel", status_code=status.HTTP_200_OK)
+def get_next_travel(token: str = Depends(utils.verify_token)):
+
+    query_travel = dao_travel.next_travel(token["sub"])
+
+    query_travel['date_from'] = utils.format_date(query_travel['date_from'])
+
+    return JSONResponse(content=query_travel)
+
+ 
 @router.post('/probality_method', status_code=status.HTTP_200_OK)
 def get_probability_method(token: str = Depends(utils.verify_token)):
 
