@@ -52,7 +52,7 @@ def get_history(token: str = Depends(utils.verify_token)):
 
     data = {'travel_history': new_query_travel}
 
-        return JSONResponse(content=data)
+    return JSONResponse(content=data)
 
 
 @router.get("/next_travel", status_code=status.HTTP_200_OK)

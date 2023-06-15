@@ -19,7 +19,7 @@ def table_accommodation(accommodation: Accomodation):
     (default, {accommodation.travel_destination}, {accommodation.travel_style}, {accommodation.accommodation_style}, {accommodation.is_country}, {accommodation.warn}, {accommodation.mild}, {accommodation.cold}, {accommodation.price}, '{accommodation.details}', {accommodation.local_name});    
     """
 
-    cursor.execute()
+    cursor.execute(insert_accommodation)
     connection.commit()
 
     query = f"SELECT LAST_INSERT_ID() FROM accommodation"
