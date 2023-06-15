@@ -1,30 +1,10 @@
-import mysql.connector
-
-
-from parameters import HOST, USER, PASSWORD, DATABASE
-
-
-
-def conect_database(host, user, password, database):
-
-    """Essa função tem como objetivo se conectar
-    com o banco de dados"""
-
-    connetion= mysql.connector.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database,
-
-    )
-    cursor = connetion.cursor(dictionary=True)
-
-    return connetion, cursor
-
+from parameters import HOST, USER, PASSWORD, DATABASE, PORT
+from dao.dao import connect_database
 
 def get_user_questions(id_user: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -49,8 +29,9 @@ def get_user_questions(id_user: int):
     
 
 def get_travels():
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -70,8 +51,9 @@ def get_travels():
     
 
 def get_tour_travel(id_accommodation: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -91,8 +73,9 @@ def get_tour_travel(id_accommodation: int):
     
 
 def get_transport_and_tours_travel(id_accommodation: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -119,8 +102,9 @@ def get_transport_and_tours_travel(id_accommodation: int):
     
 
 def get_travel_data(transport_style: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -143,8 +127,9 @@ def get_travel_data(transport_style: int):
     
 
 def get_travel_abroad():
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -161,5 +146,3 @@ def get_travel_abroad():
     else:
         connection.close()
         return result
-    
-

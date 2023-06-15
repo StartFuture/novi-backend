@@ -1,29 +1,14 @@
-import mysql.connector
-
 from models.models_table import Accomodation, Transport, Tour
-from parameters import HOST, USER, PASSWORD, DATABASE
+from parameters import HOST, USER, PASSWORD, DATABASE, PORT
+from dao.dao import connect_database
 
-def connect_database(host, user, password, database):
-
-    """Essa função tem como objetivo se conectar
-    com o banco de dados"""
-
-    connetion= mysql.connector.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database,
-
-    )
-    cursor = connetion.cursor(dictionary=True)
-
-    return connetion, cursor
 
 def table_accommodation(accommodation: Accomodation):
     connection, cursor = connect_database(
-        host=HOST, 
-        user=USER, 
-        password=PASSWORD, 
+        host=HOST,
+        port=int(PORT),
+        user=USER,
+        password=PASSWORD,
         database=DATABASE
     )
 
@@ -49,9 +34,10 @@ def table_accommodation(accommodation: Accomodation):
 
 def table_tour(id_accommodation: int, tour: Tour):
     connection, cursor = connect_database(
-        host=HOST, 
-        user=USER, 
-        password=PASSWORD, 
+        host=HOST,
+        port=int(PORT),
+        user=USER,
+        password=PASSWORD,
         database=DATABASE
     )
 
@@ -72,9 +58,10 @@ def table_tour(id_accommodation: int, tour: Tour):
     
 def table_transport(id_accommodation: int, transport: Transport):
     connection, cursor = connect_database(
-        host=HOST, 
-        user=USER, 
-        password=PASSWORD, 
+        host=HOST,
+        port=int(PORT),
+        user=USER,
+        password=PASSWORD,
         database=DATABASE
     )
 

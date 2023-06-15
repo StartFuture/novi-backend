@@ -1,41 +1,29 @@
 from datetime import datetime
 
 import mysql.connector
-import pydantic
 
-from parameters import HOST, USER, PASSWORD, DATABASE
-
+from parameters import HOST, USER, PASSWORD, DATABASE, PORT
 from models.models_user import AddressUpdate, UserUpdate, user_review, User
 
 
-def conect_database(host, user, password, database):
-
-    """Essa função tem como objetivo se conectar
-    com o banco de dados"""
-
-    connetion= mysql.connector.connect(
+def connect_database(host, user, password, database, port):
+    connection= mysql.connector.connect(
         host=host,
+        port=port,
         user=user,
         password=password,
         database=database,
 
     )
-    cursor = connetion.cursor(dictionary=True)
+    cursor = connection.cursor(dictionary=True)
 
-    return connetion, cursor
+    return connection, cursor
 
 
 def verify_user_exist_by_email(email: str):
-
-    """Essa função tem como objetivo fazer uma consulta
-    na tabela table_users para saber se existe um usuario com
-     o mesmo email que foi adicionado na variavel email.
-     Se existe um usuario com email correspondente,
-      retorna-se o id do usuario e sua senha porem se
-      não retorna um valor vazio."""
-
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -55,14 +43,9 @@ def verify_user_exist_by_email(email: str):
 
 
 def verify_token_exist_by_id(id_user: int):
-    """Essa função tem como objetivo fazer uma consulta
-    na tabela two_auth para saber se existe a um token
-    correspondente a chave estrangeira id_user.
-    Se existe ,retorna-se  id_token, user_token e
-    create_date porem se não retorna um valor vazio."""
-
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -82,11 +65,9 @@ def verify_token_exist_by_id(id_user: int):
 
 
 def verify_token_is_revoked(id_token: int):
-    """Essa função verifica se o token do usuario
-    esta revogado retornando um valor bool(boleano)."""
-
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -103,8 +84,9 @@ def verify_token_is_revoked(id_token: int):
 
 
 def insert_revoked_token(id_token: int, id_user: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -118,8 +100,9 @@ def insert_revoked_token(id_token: int, id_user: int):
 
 
 def update_token(id_user: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -133,8 +116,9 @@ def update_token(id_user: int):
 
 
 def insert_new_token_and_code(id_user: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -148,8 +132,9 @@ def insert_new_token_and_code(id_user: int):
 
 
 def insert_new_code(id_user: int, user_code: int,):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -164,8 +149,9 @@ def insert_new_code(id_user: int, user_code: int,):
 
 
 def insert_new_user_comment(user_name: str, perfil: str, stars: int, user_comment: str):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -189,8 +175,9 @@ def insert_new_user_comment(user_name: str, perfil: str, stars: int, user_commen
 
   
 def insert_review(user: user_review, id_user: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -211,8 +198,9 @@ def insert_review(user: user_review, id_user: int):
     
 
 def update_review(id_user: int, user: user_review, id_review: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -232,8 +220,9 @@ def update_review(id_user: int, user: user_review, id_review: int):
     
 
 def delete_review(id_review: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -253,8 +242,9 @@ def delete_review(id_review: int):
 
 
 def read_review(id_user: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -275,8 +265,9 @@ def read_review(id_user: int):
     
 
 def read_all_review():
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -297,8 +288,9 @@ def read_all_review():
 
 
 def verify_user_exist_by_id_join_address(id_user: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
