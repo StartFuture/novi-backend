@@ -91,3 +91,39 @@ def select_history(id_user: int):
     connection.close()
 
     return query_travel
+
+def next_travel(id_user: int):
+    connection, cursor = connect_database(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"""
+    SELECT tl.id as id_travel, 
+	      tl.id_accommodation, 
+          tl.id_transport_from,
+          tl.id_transport_return, 
+          tl.date_from, 
+          tl.quantity_people, 
+          t.id as id_transport, 
+          t.transport_style,
+          t.details as transport_details,
+          a.id as id_accommodation,
+          a.travel_destination,
+          t2.id_tour,
+          t3.details as tour_details
+	FROM travel tl 
+    LEFT JOIN transport t ON tl.id_transport_from = t.id
+    LEFT JOIN accommodation a ON a.id = tl.id_accommodation 
+    LEFT JOIN traveltour t2 ON t2.id_travel = tl.id 
+    LEFT JOIN tour t3 ON t3.id = t2.id_tour 
+    WHERE date_from > CURDATE() AND id_user = 1
+    ORDER BY date_from;
+    """
+
+    cursor.execute(query)
+    query_next_travel = cursor.fetchall()
+
+    return query_next_travel
