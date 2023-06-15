@@ -29,7 +29,6 @@ def auth(user: OAuth2PasswordRequestForm = Depends()) -> dict:
 
 @router.get("/get_user_by_id", status_code=status.HTTP_200_OK)
 def get_user_by_id(token: str = Depends(utils.verify_token)):
-    print(token["sub"])
-    #print(token_result)
+
     query = dao.verify_user_exist_by_id_join_address(token["sub"])
     return JSONResponse(content='it´s working')
