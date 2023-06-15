@@ -27,7 +27,6 @@ def conect_database(host, user, password, database):
 
 #inserindo atividades de preferencia do ususario
 def insert_travel_activitie(activitie: travel_activities, id_user: int):
-    print(HOST, USER, PASSWORD, DATABASE)
     connection, cursor = conect_database(
         host=HOST,
         user=USER,
@@ -119,4 +118,4 @@ def insert_weather_option(weather: weather_option, id_user: int):
         connection.commit()
         connection.close()
         return True
-
+    
