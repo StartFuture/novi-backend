@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 import requests
 
 from dao import dao_users
-from models.user_model import  Address, User, UserUpdate, AddressUpdate, NewsUpdate
+from models.models_user import  Address, User, UserUpdate, AddressUpdate, NewsUpdate
 import utils
 
 
@@ -19,14 +19,6 @@ def delete(token: str = Depends(utils.verify_token)):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="wrong input")
 
 
-#Lista usuários
-@router.get('/')
-def read_data():
-    querry = dao_users.select_all()
-    return querry
-
-
-#Lista usuário
 @router.get('/read_user', status_code=status.HTTP_302_FOUND)
 async def read_user_data(token: str = Depends(utils.verify_token)):
 
@@ -44,7 +36,6 @@ async def read_user_data(token: str = Depends(utils.verify_token)):
     return JSONResponse(content=data)
 
 
-#Criação de Usuário
 @router.post('/create_user', status_code=status.HTTP_201_CREATED)
 async def write_data(address: Address, user: User):
     
@@ -65,7 +56,7 @@ async def write_data(address: Address, user: User):
     user.name_user, last_name = utils.username_processing(user.name_user)
     user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
     cpf_verify, email_verify = await dao_users.verify_data_overwrite(user.cpf, user.email)
-    # ddi_verify = utils.consult_ddi(user.cellphone)
+    ddi_verify = utils.consult_ddi(user.cellphone)
 
 
     #Verificando Erros
@@ -108,8 +99,8 @@ async def write_data(address: Address, user: User):
         share_data= user.share_data
     )
 
-
     return JSONResponse(content={'message': f'User {user.name_user}, created successfully'})
+
 
 @router.patch('/update_user', status_code=status.HTTP_200_OK)
 async def update_data(address: AddressUpdate, user: UserUpdate, news_update: NewsUpdate, token: str = Depends(utils.verify_token)):
@@ -162,7 +153,4 @@ async def update_data(address: AddressUpdate, user: UserUpdate, news_update: New
         address= address
     )
 
-
     return JSONResponse(content={'message': f'User {user.name_user}, updated successfully'})
-
-

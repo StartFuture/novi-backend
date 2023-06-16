@@ -68,3 +68,4 @@ class transport_information(BaseModel):
     details: str
     price: str
     transport_style: int
+    

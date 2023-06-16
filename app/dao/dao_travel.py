@@ -1,31 +1,14 @@
-import mysql.connector
-import pydantic
-
-from parameters import HOST, USER, PASSWORD, DATABASE
+from parameters import HOST, USER, PASSWORD, DATABASE, PORT
 from models.models_travel import Travel
+from dao.dao import connect_database
 
-
-def connect_database(host, user, password, database):
-
-    """Essa função tem como objetivo se conectar
-    com o banco de dados"""
-
-    connetion= mysql.connector.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database,
-
-    )
-    cursor = connetion.cursor(dictionary=True)
-
-    return connetion, cursor
 
 def new_travel(id_user: int, id_accommodation: int, id_transport_from: int , id_transport_return: int, date_from: str, date_return: str, quantity_people: int, price: float):
     connection, cursor = connect_database(
-        host=HOST, 
-        user=USER, 
-        password=PASSWORD, 
+        host=HOST,
+        port=int(PORT),
+        user=USER,
+        password=PASSWORD,
         database=DATABASE
     )
 
@@ -50,6 +33,7 @@ def new_travel(id_user: int, id_accommodation: int, id_transport_from: int , id_
 def new_travel_tour(id_travel: int, id_tour: int):
     connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -72,6 +56,7 @@ def new_travel_tour(id_travel: int, id_tour: int):
 def select_history(id_user: int):
     connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE

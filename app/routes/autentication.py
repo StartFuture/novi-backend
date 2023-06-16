@@ -8,9 +8,7 @@ from dao import dao, dao_users
 import utils
 
 
-
 router = APIRouter()
-
 
 
 @router.post("/login", status_code=status.HTTP_200_OK)
@@ -27,12 +25,10 @@ def auth(user: OAuth2PasswordRequestForm = Depends()) -> dict:
         
     else:#se usuario não existe:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")#Mensagem informando que usuario não foi encontrado
-    
-       
+
 
 @router.get("/get_user_by_id", status_code=status.HTTP_200_OK)
 def get_user_by_id(token: str = Depends(utils.verify_token)):
-    print(token["sub"])
-    #print(token_result)
+
     query = dao.verify_user_exist_by_id_join_address(token["sub"])
     return JSONResponse(content='it´s working')

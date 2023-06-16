@@ -1,34 +1,13 @@
-import mysql.connector
-
-
-from parameters import HOST, USER, PASSWORD, DATABASE
-
+from parameters import HOST, USER, PASSWORD, DATABASE, PORT
 from models.models_travel_quiz import travel_activities, travel_options, travel_cultures, weather_option
-
-
-def conect_database(host, user, password, database):
-
-    """Essa função tem como objetivo se conectar
-    com o banco de dados"""
-
-    connetion= mysql.connector.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database,
-
-    )
-    cursor = connetion.cursor(dictionary=True)
-
-    return connetion, cursor
-
-
+from dao.dao import connect_database
 
 
 #inserindo atividades de preferencia do ususario
 def insert_travel_activitie(activitie: travel_activities, id_user: int):
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -50,9 +29,9 @@ def insert_travel_activitie(activitie: travel_activities, id_user: int):
     
 
 def insert_travel_options(option: travel_options, id_user: int):
-    print(HOST, USER, PASSWORD, DATABASE)
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -74,9 +53,9 @@ def insert_travel_options(option: travel_options, id_user: int):
     
 
 def insert_travel_cultures(culture: travel_cultures, id_user: int):
-    print(HOST, USER, PASSWORD, DATABASE)
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
@@ -98,9 +77,9 @@ def insert_travel_cultures(culture: travel_cultures, id_user: int):
     
 
 def insert_weather_option(weather: weather_option, id_user: int):
-    print(HOST, USER, PASSWORD, DATABASE)
-    connection, cursor = conect_database(
+    connection, cursor = connect_database(
         host=HOST,
+        port=int(PORT),
         user=USER,
         password=PASSWORD,
         database=DATABASE
