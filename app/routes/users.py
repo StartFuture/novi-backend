@@ -56,7 +56,7 @@ async def write_data(address: Address, user: User):
     user.name_user, last_name = utils.username_processing(user.name_user)
     user.cpf, user.cellphone, user.email = await utils.user_data_processing(user.cpf, user.cellphone, user.email)
     cpf_verify, email_verify = await dao_users.verify_data_overwrite(user.cpf, user.email)
-    # ddi_verify = utils.consult_ddi(user.cellphone)
+    ddi_verify = utils.consult_ddi(user.cellphone)
 
 
     #Verificando Erros
