@@ -6,4 +6,4 @@ python-dotenv==1.0.0
 python-jose==3.3.0
 uvicorn[standard]
 passlib==1.7.4
-python-multipart==0.0.6
+python-multipart==0.0.7
